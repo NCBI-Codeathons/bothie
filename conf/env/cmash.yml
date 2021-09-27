@@ -1,0 +1,7 @@
+name: cmash
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - cmash>0,<1

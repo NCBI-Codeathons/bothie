@@ -1,0 +1,7 @@
+name: sourmash4
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - sourmash>4,<5
