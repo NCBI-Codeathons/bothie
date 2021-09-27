@@ -9,7 +9,7 @@ import argparse
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('config_file')
-    p.add_argument('tool', default='sourmash')
+    p.add_argument('tool')
     p.add_argument('query')
     args = p.parse_args()
 
