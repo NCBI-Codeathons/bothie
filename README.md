@@ -5,6 +5,5 @@
 Install snakemake. Then run:
 
 ```
-cd ./sourmash/
-../runme.py conf-basic.yml ../data/genome-s10.fa.gz
+../runme.py sourmash/conf-basic.yml sourmash ../data/genome-s10.fa.gz
 ```
