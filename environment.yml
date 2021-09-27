@@ -1,0 +1,8 @@
+name: spacegraphcats
+channels:
+    - conda-forge
+    - bioconda
+    - defaults
+dependencies:
+    - snakemake-minimal>=6.4.0
+    - mamba
