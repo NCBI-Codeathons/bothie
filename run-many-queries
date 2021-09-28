@@ -66,6 +66,8 @@ def main():
     run_snakemake('prepare_sample', this_snakemake_args, tool_dir)
     print(datetime.datetime.now(), 'END SAMPLE PREP')
 
+    results = []
+
     for query in queries:
         print('-----------------------------')
         print("query file:", query)
@@ -92,11 +94,16 @@ def main():
                 print('SUCCESS! It was found! :)', query)
             else:
                 print('FAILURE! It was not found! ;(', query)
+            results.append((query, result))
 
         query_prep = os.path.join(args.output_dir, 'prep.query')
         shutil.rmtree(query_prep)
         result_dir = os.path.join(args.output_dir, "results")
         shutil.rmtree(result_dir)
+
+    print('SUMMARY:')
+    for (query, result) in results:
+        print(query, result)
 
 if __name__ == '__main__':
     main()
