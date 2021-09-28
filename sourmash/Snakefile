@@ -6,7 +6,7 @@ QUERY=config.get('query_file', '')
 ksize = config.get('ksize', 'unset')
 
 # don't change these :)
-OUTPUT_DIR='outputs'
+OUTPUT_DIR=config['output_dir']
 SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
 QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
 

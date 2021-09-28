@@ -1,0 +1,75 @@
+#! /usr/bin/env python3
+"""
+Using a bothie tool directory (e.g. ./sourmash/), run all the steps.
+
+* install tools
+* prepare sample
+* prepare query
+* run query
+
+By default will re-prepare the query and re-run the query.
+"""
+import os
+import subprocess
+import datetime
+import shutil
+import argparse
+
+
+def run_snakemake(target, extra_args, tool_dir):
+    cmd = f"snakemake -j 1 {target} {' '.join(extra_args)}"
+    print('running:', (cmd,))
+    subprocess.check_call(cmd, shell=True, cwd=tool_dir)
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('config_file', help='config file, YAML or JSON')
+    p.add_argument('tool', help='tool directory, e.g. sourmash')
+    p.add_argument('query', help='query sequence(s)')
+    p.add_argument('--no-clean-query', help="do not reset query prep; reuse query prep", action="store_true")
+    p.add_argument('--output-dir', default='outputs')
+    args = p.parse_args()
+
+    # fix paths so that they are relative to cwd
+    args.query = os.path.abspath(args.query)
+    args.output_dir = os.path.abspath(args.output_dir)
+
+    output_dir = args.output_dir
+    if not args.no_clean_query:
+        print(f'removing query prep from output_dir {output_dir}/')
+        try:
+            query_prep = os.path.join(args.output_dir, 'prep.query')
+            shutil.rmtree(query_prep)
+            print('...done!')
+        except FileNotFoundError:
+            print('(none found)')
+    else:
+        print("leaving query prep alone.")
+
+    tool_dir = args.tool
+    config_file = os.path.abspath(args.config_file)
+
+    # note: -C / config overrides need to go at end of list
+    snakemake_args = ["--use-conda",
+                      f"--configfile {config_file}",
+                      f"-C query_file={args.query} output_dir={args.output_dir}"]
+
+    print('installing software:')
+
+    run_snakemake('install_software', snakemake_args, tool_dir)
+                      
+    print(datetime.datetime.now(), 'START SAMPLE PREP')
+    run_snakemake('prepare_sample', snakemake_args, tool_dir)
+    print(datetime.datetime.now(), 'END SAMPLE PREP')
+
+    print(datetime.datetime.now(), 'START QUERY PREP')
+    run_snakemake('prepare_query', snakemake_args, tool_dir)
+    print(datetime.datetime.now(), 'END QUERY PREP')
+
+    print(datetime.datetime.now(), 'START DO QUERY')
+    run_snakemake('do_query', snakemake_args, tool_dir)
+    print(datetime.datetime.now(), 'END DO QUERY')
+
+if __name__ == '__main__':
+    main()
