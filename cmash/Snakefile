@@ -81,7 +81,7 @@ rule do_query:
     shell: """
        rm -rf {output}
        mkdir -p {output}
-       QueryDNADatabase.py {input.query} {input.sample} {output}/results.rsv
+       QueryDNADatabase.py {input.query} {input.sample} {output}/results.csv
     """
 
 rule install_software:
