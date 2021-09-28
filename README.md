@@ -58,3 +58,15 @@ conda env create -n bothie -f environment.yml
 ```
 
 ## Team
+Titus Brown: ctbrown@ucdavis.edu
+Tessa Pierce Ward: ntpierce@gmail.com
+Olaitan Awe: laitanawe@gmail.com
+Arianna krinos: akrinos@whoi.edu
+Minghand Lee: matchy@snu.ac.kr
+Rene Miller-Xavier: rmillerxavie2017@fau.edu
+Rodrigo Polo: ropolo@gmail.com
+Adelaide Rhodes: adelaide.rhodes@nih.gov
+Jack Roddy: jack.w.roddy@gmail.com
+Alex Sweeten: alex.sweeten@gmail.com
+Adrian Viehweger: adrian.viehweger@googlemail.com
+Rayan Chikhi: rchikhi@gmail.com
