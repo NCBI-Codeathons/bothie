@@ -1,0 +1,79 @@
+#! /usr/bin/env python3
+"""
+Using a bothie tool directory (e.g. ./sourmash/), run multiple queries.
+
+* install tools
+* prepare sample
+* for each query, prepare and run query
+"""
+import os
+import subprocess
+import datetime
+import shutil
+import argparse
+
+
+def run_snakemake(target, extra_args, tool_dir):
+    cmd = f"snakemake -j 1 {target} {' '.join(extra_args)}"
+    print('running:', (cmd,))
+    subprocess.check_call(cmd, shell=True, cwd=tool_dir)
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('config_file', help='config file, YAML or JSON')
+    p.add_argument('tool', help='tool directory, e.g. sourmash')
+    p.add_argument("--queries", required=True, nargs='+',
+                   help="one or more query filenames")
+    p.add_argument('--output-dir', default='outputs')
+    args = p.parse_args()
+
+    queries = args.queries
+
+    # fix paths so that they are relative to cwd
+    queries = [ os.path.abspath(q) for q in queries ]
+    args.output_dir = os.path.abspath(args.output_dir)
+
+    # clean up any pre-existing query prep
+    output_dir = args.output_dir
+    print(f'removing any query prep from output_dir {output_dir}/')
+    try:
+        query_prep = os.path.join(args.output_dir, 'prep.query')
+        shutil.rmtree(query_prep)
+    except FileNotFoundError:
+        pass
+
+    tool_dir = args.tool
+    config_file = os.path.abspath(args.config_file)
+
+    # note: -C / config overrides need to go at end of list
+    snakemake_args = ["--use-conda",
+                      f"--configfile {config_file}"]
+
+    print('installing software:')
+
+    run_snakemake('install_software', snakemake_args, tool_dir)
+                      
+    print(datetime.datetime.now(), 'START SAMPLE PREP')
+    run_snakemake('prepare_sample', snakemake_args, tool_dir)
+    print(datetime.datetime.now(), 'END SAMPLE PREP')
+
+    for query in queries:
+        print("query file:", query)
+        this_snakemake_args = list(snakemake_args)
+        config_args = f"-C query_file={query} output_dir={args.output_dir}"
+        this_snakemake_args.append(config_args)
+
+        print(datetime.datetime.now(), 'START QUERY PREP')
+        run_snakemake('prepare_query', this_snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END QUERY PREP')
+
+        print(datetime.datetime.now(), 'START DO QUERY')
+        run_snakemake('do_query', this_snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END DO QUERY')
+        
+        query_prep = os.path.join(args.output_dir, 'prep.query')
+        shutil.rmtree(query_prep)
+
+if __name__ == '__main__':
+    main()

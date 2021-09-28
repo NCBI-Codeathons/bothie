@@ -25,9 +25,9 @@ if not SAMPLES:
     print("No files in 'metagenome_files' in the config?", file=sys.stderr)
     do_fail = True
 
-if not QUERY:
-    print("No 'query' in the config?", file=sys.stderr)
-    do_fail = True
+#if not QUERY:
+#    print("No 'query' in the config?", file=sys.stderr)
+#    do_fail = True
 
 try:
     ksize = int(ksize)
@@ -40,9 +40,9 @@ for sample in SAMPLES:
         print(f"metagenome file '{sample}' does not exist.", file=sys.stderr)
         do_fail = True
 
-if not os.path.exists(QUERY):
-    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
-    do_fail = True
+#if not os.path.exists(QUERY):
+#    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
+#    do_fail = True
 
 if do_fail:
     print('Snakefile config checks FAILED.', file=sys.stderr)
