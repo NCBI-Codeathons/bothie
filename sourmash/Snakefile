@@ -2,7 +2,7 @@ import sys, os
 
 # load stuff from config file
 SAMPLES=config.get('metagenome_files', [])
-QUERY=config.get('query', '')
+QUERY=config.get('query_file', '')
 ksize = config.get('ksize', 'unset')
 
 # don't change these :)
@@ -60,7 +60,7 @@ rule prepare_sample:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k=31 {SAMPLES} -o {output}/sample.sig
+       sourmash sketch dna -p k={ksize} {SAMPLES} -o {output}/sample.sig
     """
 
 rule prepare_query:
@@ -69,7 +69,7 @@ rule prepare_query:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k=31 {QUERY} -o {output}/query.sig
+       sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig
     """
 
 rule do_query:

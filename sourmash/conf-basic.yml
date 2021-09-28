@@ -1,7 +1,6 @@
+# one or more files that will be combined into a single sample databsae
 metagenome_files:
 - ../data/genome-s10+s11.fa.gz
 
-query: ../data/genome-s10.fa.gz
-
-# sourmash config params
+# sourmash-specific config params
 ksize: 31

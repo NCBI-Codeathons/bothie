@@ -13,6 +13,9 @@ def main():
     p.add_argument('query')
     args = p.parse_args()
 
+    # fix path for query file in case it's relative
+    args.query = os.path.abspath(args.query)
+
     print('removing outputs/')
     try:
         shutil.rmtree('./outputs/')
