@@ -29,8 +29,6 @@ def main():
     p.add_argument('tool', help='tool directory, e.g. sourmash')
     p.add_argument('query', help='query sequence(s)')
     p.add_argument('--no-clean-query', help="do not reset query prep; reuse query prep", action="store_true")
-    # we probably want to always have a default in the Snakemake files instead
-    #p.add_argument('--output-dir', default='outputs')
     p.add_argument('--output-dir')
     args = p.parse_args()
 
@@ -42,6 +40,7 @@ def main():
     if args.output_dir:
         args.output_dir = os.path.abspath(args.output_dir)
     else:
+        # we'll set a default output path to outputs/<tool name>
         args.output_dir = os.path.abspath('outputs/' + args.tool)
 
     output_dir = args.output_dir

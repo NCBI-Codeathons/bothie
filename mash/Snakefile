@@ -88,9 +88,10 @@ rule do_query:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       mash screen {input.query} {input.sample}
-       # if we want to actually put the results in a file we can do something like this
-       # mash screen {input.query} {input.sample} > {output}/results.csv
+       # doesn't seem like mash screen supports output direction
+       mash screen {input.query} {input.sample} > {output}/results.csv
+       # if we want to print the results still
+       cat {output}/results.csv
     """
 
 rule install_software:
