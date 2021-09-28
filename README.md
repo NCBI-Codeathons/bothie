@@ -19,7 +19,7 @@ source ~/.bashrc
 
 ```
 cd bothie
-conda env create -n bothie -f environment.yaml
+conda env create -n bothie -f environment.yml
 ```
 
 4. Activate the `conda` environment:
