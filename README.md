@@ -11,7 +11,7 @@
 
 
 ## What is Bothie?
-
+Bothie is a pipeline that could be used for the the retrieval of metagenomic samples with user-provided long queries, such as genomes for viruses, bacteria, or fungi.
 
 ## How to use Bothie
 
