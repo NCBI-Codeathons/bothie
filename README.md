@@ -3,8 +3,19 @@
 ## quickstart
 
 1. [Install `conda`](https://bioconda.github.io/user/install.html#install-conda)
-2. Clone this repository (`git clone https://github.com/NCBI-Codeathons/bothie`)
-3. Create the `conda` environment:
+
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+Answer ‘yes’ to all questions
+Use default install location
+```
+source ~/.bashrc
+```
+
+3. Clone this repository (`git clone https://github.com/NCBI-Codeathons/bothie`)
+4. Create the `conda` environment:
 
 ```
 cd bothie
