@@ -76,7 +76,7 @@ rule prepare_query:
 rule do_query:
     input:
         query = f"{QUERY_PREP}/query.sig",
-        sample = f"{SAMPLES}/sample.sig",
+        sample = f"{SAMPLES}",
     output: directory("results")
     conda: "../conf/env/mash2.yml"
     shell: """
