@@ -1,6 +1,4 @@
 metagenome_files: 
 - ../data/genome-s10+s11.fa.gz
 
-query: ../data/genome-s10.fa.gz
-
 # cmash config params

@@ -5,9 +5,10 @@ SAMPLES=config.get('metagenome_files', [])
 QUERY=config.get('query_file', '')
 
 # don't change these :)
-OUTPUT_DIR='outputs'
-SAMPLE_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.sample'))
-QUERY_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.query'))
+OUTPUT_DIR=config['output_dir']
+SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
+QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
+RESULTS_DIR=os.path.join(OUTPUT_DIR, 'results')
 
 ###
 ### check configuration
@@ -24,9 +25,9 @@ if not SAMPLES:
     print("No files in 'metagenome_files' in the config?", file=sys.stderr)
     do_fail = True
 
-if not QUERY:
-    print("No 'query' in the config?", file=sys.stderr)
-    do_fail = True
+#if not QUERY:
+#    print("No 'query' in the config?", file=sys.stderr)
+#    do_fail = True
 
 # for sample in SAMPLES:
 
@@ -36,9 +37,9 @@ for sample in SAMPLES:
         do_fail = True
 
 
-if not os.path.exists(QUERY):
-    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
-    do_fail = True
+#if not os.path.exists(QUERY):
+#    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
+#    do_fail = True
 
 if do_fail:
     print('Snakefile config checks FAILED.', file=sys.stderr)
@@ -72,17 +73,34 @@ rule prepare_query:
        cp {QUERY} {output}/query
     """
 
-rule do_query:
+rule execute_query:
     input:
         query = f"{QUERY_PREP}/query",
         sample = f"{SAMPLE_PREP}/sample.h5",
-    output: directory("results")
+    output: directory(RESULTS_DIR)
     conda: "../conf/env/cmash.yml"
     shell: """
        rm -rf {output}
        mkdir -p {output}
        QueryDNADatabase.py {input.query} {input.sample} {output}/results.csv
     """
+
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for cmash - two lines in file :)
+            found = False
+            if len(lines) == 2:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
 
 rule install_software:
     conda: "../conf/env/cmash.yml"
