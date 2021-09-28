@@ -10,6 +10,7 @@ Using a bothie tool directory (e.g. ./sourmash/), run all the steps.
 By default will re-prepare the query and re-run the query.
 """
 import os
+import sys
 import subprocess
 import datetime
 import shutil
@@ -27,12 +28,15 @@ def main():
     p.add_argument('config_file', help='config file, YAML or JSON')
     p.add_argument('tool', help='tool directory, e.g. sourmash')
     p.add_argument('query', help='query sequence(s)')
-    p.add_argument('--no-clean-query', help="do not reset query prep; reuse query prep")
+    p.add_argument('--no-clean-query', help="do not reset query prep; reuse query prep", action="store_true")
     p.add_argument('--output-dir', default='outputs')
     args = p.parse_args()
 
     # fix paths so that they are relative to cwd
     args.query = os.path.abspath(args.query)
+    if not os.path.isfile(args.query):
+        print(f'ERROR: specified query ({args.query}) is not a file! Is the path correct?')
+        sys.exit(-1)
     args.output_dir = os.path.abspath(args.output_dir)
 
     output_dir = args.output_dir
