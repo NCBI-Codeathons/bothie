@@ -6,8 +6,8 @@ QUERY=config.get('query', '')
 
 # don't change these :)
 OUTPUT_DIR='outputs'
-SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
-QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
+SAMPLE_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.sample'))
+QUERY_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.query'))
 
 ###
 ### check configuration
@@ -58,7 +58,7 @@ rule prepare_sample:
         rm -rf {output}
         mkdir -p {output}
         for sample in {SAMPLES}; do
-            echo ${sample} >> {output}/reference_paths.txt
+            echo {sample} >> {output}/reference_paths.txt
         done
         MakeDNADatabase.py {output}/reference_paths.txt {output}/sample.h5
     """
@@ -69,19 +69,19 @@ rule prepare_query:
     shell: """
        rm -rf {output}
        mkdir -p {output}
-       cp {QUERY} -o {output}/{QUERY}
+       cp {QUERY} {output}/query
     """
 
 rule do_query:
     input:
-        query = f"{QUERY_PREP}/{QUERY}",
+        query = f"{QUERY_PREP}/query",
         sample = f"{SAMPLE_PREP}/sample.h5",
-    output: directory("results")
+    output: "results/{QUERY_PREP}.csv"
     conda: "../conf/env/cmash.yml"
     shell: """
        rm -rf {output}
        mkdir -p {output}
-       QueryDNADatabase.py {input.query} {input.sample} {output}/results.csv
+       QueryDNADatabase.py {input.query} {input.sample} {output}
     """
 
 rule install_software:
