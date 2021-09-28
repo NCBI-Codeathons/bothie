@@ -7,6 +7,7 @@ ksize = config.get('ksize', 'unset')
 
 # don't change these :)
 OUTPUT_DIR=config.get('output_dir', 'outputs')
+RESULTS_DIR=os.path.join(OUTPUT_DIR, 'results')
 SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
 QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
 
@@ -83,7 +84,7 @@ rule do_query:
         # but it just doesn't seem to like it.
         query = f"{QUERY_PREP}/query.sig.msh",
         sample = f"{SAMPLE_PREP}/sample.sig",
-    output: directory("results")
+    output: directory(RESULTS_DIR)
     conda: "../conf/env/mash2.yml"
     shell: """
        rm -fr {output}
