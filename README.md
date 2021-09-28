@@ -1,5 +1,23 @@
 # bothie
 
+## What is biomedical text mining?
+
+
+## What's the problem?
+
+
+
+## Why should we solve it?
+
+
+## What is Bothie?
+
+
+## How to use Bothie
+
+
+
+## Installation Instructions
 ## quickstart
 
 1. [Install `conda`](https://bioconda.github.io/user/install.html#install-conda)
