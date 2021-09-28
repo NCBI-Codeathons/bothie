@@ -2,7 +2,7 @@ import sys, os
 
 # load stuff from config file
 SAMPLES=config.get('metagenome_files', [])
-QUERY=config.get('query', '')
+QUERY=config.get('query_file', '')
 
 # don't change these :)
 OUTPUT_DIR='outputs'
@@ -76,12 +76,12 @@ rule do_query:
     input:
         query = f"{QUERY_PREP}/query",
         sample = f"{SAMPLE_PREP}/sample.h5",
-    output: "results/{QUERY_PREP}.csv"
+    output: directory("results")
     conda: "../conf/env/cmash.yml"
     shell: """
        rm -rf {output}
        mkdir -p {output}
-       QueryDNADatabase.py {input.query} {input.sample} {output}
+       QueryDNADatabase.py {input.query} {input.sample} {output}/results.rsv
     """
 
 rule install_software:
