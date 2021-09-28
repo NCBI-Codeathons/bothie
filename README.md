@@ -1,6 +1,6 @@
 # bothie
 
-## What is biomedical text mining?
+## What is Metagenomic Search?
 
 
 ## What's the problem?
@@ -56,3 +56,5 @@ conda env create -n bothie -f environment.yml
 ```
 ./run-one-query sourmash/conf-basic.yml sourmash data/genome-s10.fa.gz
 ```
+
+## Team
