@@ -52,10 +52,18 @@ def main():
 
     print('installing software:')
 
-    run_snakemake('install_software', snakemake_args, tool_dir)
+    this_snakemake_args = list(snakemake_args)
+    config_args = f"-C output_dir={args.output_dir}"
+    this_snakemake_args.append(config_args)
+
+    run_snakemake('install_software', this_snakemake_args, tool_dir)
                       
+    this_snakemake_args = list(snakemake_args)
+    config_args = f"-C output_dir={args.output_dir}"
+    this_snakemake_args.append(config_args)
+
     print(datetime.datetime.now(), 'START SAMPLE PREP')
-    run_snakemake('prepare_sample', snakemake_args, tool_dir)
+    run_snakemake('prepare_sample', this_snakemake_args, tool_dir)
     print(datetime.datetime.now(), 'END SAMPLE PREP')
 
     for query in queries:
