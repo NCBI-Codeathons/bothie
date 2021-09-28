@@ -9,6 +9,7 @@ ksize = config.get('ksize', 'unset')
 OUTPUT_DIR=config['output_dir']
 SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
 QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
+RESULTS_DIR=os.path.join(OUTPUT_DIR, 'results')
 
 ###
 ### check configuration
@@ -25,9 +26,10 @@ if not SAMPLES:
     print("No files in 'metagenome_files' in the config?", file=sys.stderr)
     do_fail = True
 
-if not QUERY:
-    print("No 'query' in the config?", file=sys.stderr)
-    do_fail = True
+print('QUERY is:', (QUERY,), file=sys.stderr)
+#if not QUERY:
+#    print("No 'query' in the config?", file=sys.stderr)
+#    do_fail = True
 
 try:
     ksize = int(ksize)
@@ -40,8 +42,12 @@ for sample in SAMPLES:
         print(f"metagenome file '{sample}' does not exist.", file=sys.stderr)
         do_fail = True
 
-if not os.path.exists(QUERY):
-    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
+#if not os.path.exists(QUERY):
+#    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
+#    do_fail = True
+
+if not OUTPUT_DIR.startswith('/'):
+    print(f"output directory '{OUTPUT_DIR}' is not an absolute path.")
     do_fail = True
 
 if do_fail:
@@ -49,6 +55,7 @@ if do_fail:
     sys.exit(-1)
 
 print("Configuration PASSED!", file=sys.stderr)
+print('output directory:', OUTPUT_DIR, file=sys.stderr)
 
 ###
 ### actual rules to run something
@@ -66,23 +73,43 @@ rule prepare_sample:
 rule prepare_query:
     output: directory(QUERY_PREP)
     conda: "../conf/env/sourmash4.yml"
+    params:
+        name = os.path.basename(QUERY)
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig
+       sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig \
+          --merge {params.name}
     """
 
-rule do_query:
+rule execute_query_command:
     input:
         query = f"{QUERY_PREP}/query.sig",
         sample = f"{SAMPLE_PREP}/sample.sig",
-    output: directory("results")
+    output: directory(RESULTS_DIR)
     conda: "../conf/env/sourmash4.yml"
     shell: """
        rm -fr {output}
        mkdir -p {output}
        sourmash search --containment {input.query} {input.sample} -o {output}/results.csv
     """
+
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for sourmash - two lines in file :)
+            found = False
+            if len(lines) == 2:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
 
 rule install_software:
     conda: "../conf/env/sourmash4.yml"
