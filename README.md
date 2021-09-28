@@ -36,5 +36,5 @@ conda env create -n bothie -f environment.yaml
 5. In the activated `conda` environment, you can run:
 
 ```
-./runme.py sourmash/conf-basic.yml sourmash data/genome-s10.fa.gz
+./run-one-query sourmash/conf-basic.yml sourmash data/genome-s10.fa.gz
 ```
