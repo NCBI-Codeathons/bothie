@@ -64,10 +64,12 @@ print('output directory:', OUTPUT_DIR, file=sys.stderr)
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {SAMPLES} -o {output}/sample.sig
+       sourmash sketch dna -p k={ksize} {SAMPLES} -o {output}/sample.sig 2> {log}
     """
 
 rule prepare_query:
@@ -75,11 +77,13 @@ rule prepare_query:
     conda: "../conf/env/sourmash4.yml"
     params:
         name = os.path.basename(QUERY)
+    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
        sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig \
-          --merge {params.name}
+          --merge {params.name}  2> {log}
     """
 
 rule execute_query_command:
@@ -88,15 +92,18 @@ rule execute_query_command:
         sample = f"{SAMPLE_PREP}/sample.sig",
     output: directory(RESULTS_DIR)
     conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/execute_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/execute_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash search --containment {input.query} {input.sample} -o {output}/results.csv
+       sourmash search --containment {input.query} {input.sample} -o {output}/results.csv  2> {log}
     """
 
 rule do_query:
     message: "Run query and evaluate if it found it, or not."
     input: dir=RESULTS_DIR
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/do_query.benchmark"
     run:
         with open(input.dir + '/results.csv', "rt") as fp:
             lines = fp.readlines()
@@ -113,6 +120,8 @@ rule do_query:
 
 rule install_software:
     conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/install_software.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/install_software.benchmark"
     shell: """
-       sourmash --version
+       sourmash --version 2> {log}
     """
