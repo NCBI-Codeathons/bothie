@@ -59,6 +59,7 @@ def main():
     print(datetime.datetime.now(), 'END SAMPLE PREP')
 
     for query in queries:
+        print('-----------------------------')
         print("query file:", query)
         this_snakemake_args = list(snakemake_args)
         config_args = f"-C query_file={query} output_dir={args.output_dir}"
@@ -71,9 +72,23 @@ def main():
         print(datetime.datetime.now(), 'START DO QUERY')
         run_snakemake('do_query', this_snakemake_args, tool_dir)
         print(datetime.datetime.now(), 'END DO QUERY')
-        
+
+        result_file = os.path.join(args.output_dir, "results", "RESULT")
+        assert os.path.exists(result_file)
+        with open(result_file) as fp:
+            result = fp.read()
+            result = result.strip()
+            result = int(result)
+            result = bool(result)
+            if result:
+                print('SUCCESS! It was found! :)', query)
+            else:
+                print('FAILURE! It was not found! ;(', query)
+
         query_prep = os.path.join(args.output_dir, 'prep.query')
         shutil.rmtree(query_prep)
+        result_dir = os.path.join(args.output_dir, "results")
+        shutil.rmtree(result_dir)
 
 if __name__ == '__main__':
     main()

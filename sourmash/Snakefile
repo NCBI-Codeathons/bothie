@@ -76,7 +76,7 @@ rule prepare_query:
           --merge {params.name}
     """
 
-rule do_query:
+rule execute_query_command:
     input:
         query = f"{QUERY_PREP}/query.sig",
         sample = f"{SAMPLE_PREP}/sample.sig",
@@ -87,6 +87,23 @@ rule do_query:
        mkdir -p {output}
        sourmash search --containment {input.query} {input.sample} -o {output}/results.csv
     """
+
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for sourmash - two lines in file :)
+            found = False
+            if len(lines) == 2:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
 
 rule install_software:
     conda: "../conf/env/sourmash4.yml"
