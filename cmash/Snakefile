@@ -1,0 +1,91 @@
+import sys, os
+
+# load stuff from config file
+SAMPLES=config.get('metagenome_files', [])
+QUERY=config.get('query_file', '')
+
+# don't change these :)
+OUTPUT_DIR='outputs'
+SAMPLE_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.sample'))
+QUERY_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.query'))
+
+###
+### check configuration
+###
+
+print("Checking configuration...", file=sys.stderr)
+
+do_fail = False
+
+SAMPLES = [ x.strip() for x in SAMPLES ]
+SAMPLES = [ x for x in SAMPLES if x ]
+
+if not SAMPLES:
+    print("No files in 'metagenome_files' in the config?", file=sys.stderr)
+    do_fail = True
+
+if not QUERY:
+    print("No 'query' in the config?", file=sys.stderr)
+    do_fail = True
+
+# for sample in SAMPLES:
+
+for sample in SAMPLES:
+    if not os.path.exists(sample):
+        print(f"metagenome file directory '{SAMPLES}' does not exist.", file=sys.stderr)
+        do_fail = True
+
+
+if not os.path.exists(QUERY):
+    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
+    do_fail = True
+
+if do_fail:
+    print('Snakefile config checks FAILED.', file=sys.stderr)
+    sys.exit(-1)
+
+print("Configuration PASSED!", file=sys.stderr)
+
+###
+### actual rules to run something
+###
+
+
+rule prepare_sample:
+    output: directory(SAMPLE_PREP)
+    conda: "../conf/env/cmash.yml"
+    shell: """
+        rm -rf {output}
+        mkdir -p {output}
+        for sample in {SAMPLES}; do
+            echo {sample} >> {output}/reference_paths.txt
+        done
+        MakeDNADatabase.py {output}/reference_paths.txt {output}/sample.h5
+    """
+
+rule prepare_query:
+    output: directory(QUERY_PREP)
+    conda: "../conf/env/cmash.yml"
+    shell: """
+       rm -rf {output}
+       mkdir -p {output}
+       cp {QUERY} {output}/query
+    """
+
+rule do_query:
+    input:
+        query = f"{QUERY_PREP}/query",
+        sample = f"{SAMPLE_PREP}/sample.h5",
+    output: directory("results")
+    conda: "../conf/env/cmash.yml"
+    shell: """
+       rm -rf {output}
+       mkdir -p {output}
+       QueryDNADatabase.py {input.query} {input.sample} {output}/results.csv
+    """
+
+rule install_software:
+    conda: "../conf/env/cmash.yml"
+    shell: """
+	MakeNodeGraph.py -h
+    """
