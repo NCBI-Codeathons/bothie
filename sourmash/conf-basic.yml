@@ -3,7 +3,7 @@ metagenome_files:
 - ../data/genome-s10+s11.fa.gz
 
 # default output directory
-output_dir: outputs/
+output_dir: ./outputs/
 
 # sourmash-specific config params
 ksize: 31
