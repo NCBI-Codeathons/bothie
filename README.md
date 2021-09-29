@@ -17,14 +17,13 @@ These unexplored metagenomes contain novel unculturable microbes whose function 
 
 
 ## What is Bothie?
-Bothie is a pipeline that can be used for the the retrieval of metagenomic samples with user-provided long queries such as viral, bacterial, fungal genomes and or biosynthetic gene clusters.
+Bothie is a pipeline that can be used for the identification of metagenomic samples with user-provided long queries such as viral, bacterial, fungal genomes and or biosynthetic gene clusters.
 
 ### Real world application for bothie:
 + Identifying toxin biosynthesis gene clusters in environmental water samples.
 + Microcystin BGC GenBank AF183401v1 : 64,534 bp
-+ Toxic Harmful Algal Bloom in the Saint Lucie Estuary:
-+ metagenome size 3,448,844 bp
-+ We ran with sourmash and result=1 Therefore, positive control works.
++ Toxic Harmful Algal Bloom in the Saint Lucie Estuary: metagenome size 3,448,844 bp
++ We ran with sourmash and result=56% similarity Therefore, positive control works.
 
 ## How to use Bothie
 
