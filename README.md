@@ -66,7 +66,14 @@ conda env create -n bothie -f environment.yml
 ./run-one-query sourmash/conf-basic.yml sourmash data/genome-s10.fa.gz
 ```
 
+or
+
+```
+./run-many-queries sourmash/conf-basic.yml sourmash --queries data/genome-s10.fa.gz.{1000,10000}
+```
+
 ## Team
+
 + Tessa Pierce Ward: ntpierce@gmail.com
 + Olaitan Awe: laitanawe@gmail.com
 + Arianna krinos: akrinos@whoi.edu

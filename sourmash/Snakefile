@@ -1,54 +1,16 @@
-import sys, os
-
-# load stuff from config file
+# load stuff from config
 SAMPLES=config.get('metagenome_files', [])
 QUERY=config.get('query_file', '')
 ksize = config.get('ksize', 'unset')
-
-# don't change these :)
-OUTPUT_DIR=config['output_dir']
-SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
-QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
-
-###
-### check configuration
-###
-
-print("Checking configuration...", file=sys.stderr)
-
-do_fail = False
-
-SAMPLES = [ x.strip() for x in SAMPLES ]
-SAMPLES = [ x for x in SAMPLES if x ]
-
-if not SAMPLES:
-    print("No files in 'metagenome_files' in the config?", file=sys.stderr)
-    do_fail = True
-
-if not QUERY:
-    print("No 'query' in the config?", file=sys.stderr)
-    do_fail = True
 
 try:
     ksize = int(ksize)
 except ValueError:
     print(f"Invalid ksize {repr(ksize)}", file=sys.stderr)
-    do_fail = True
+    raise
 
-for sample in SAMPLES:
-    if not os.path.exists(sample):
-        print(f"metagenome file '{sample}' does not exist.", file=sys.stderr)
-        do_fail = True
-
-if not os.path.exists(QUERY):
-    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
-    do_fail = True
-
-if do_fail:
-    print('Snakefile config checks FAILED.', file=sys.stderr)
-    sys.exit(-1)
-
-print("Configuration PASSED!", file=sys.stderr)
+# this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
+include: '../common.snakefile'
 
 ###
 ### actual rules to run something
@@ -57,35 +19,64 @@ print("Configuration PASSED!", file=sys.stderr)
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {SAMPLES} -o {output}/sample.sig
+       sourmash sketch dna -p k={ksize} {SAMPLES} -o {output}/sample.sig 2> {log}
     """
 
 rule prepare_query:
     output: directory(QUERY_PREP)
     conda: "../conf/env/sourmash4.yml"
+    params:
+        name = os.path.basename(QUERY)
+    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig
+       sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig \
+          --merge {params.name}  2> {log}
     """
 
-rule do_query:
+rule execute_query_command:
     input:
         query = f"{QUERY_PREP}/query.sig",
         sample = f"{SAMPLE_PREP}/sample.sig",
-    output: directory("results")
+    output: directory(RESULTS_DIR)
     conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/execute_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/execute_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash search --containment {input.query} {input.sample} -o {output}/results.csv
+       sourmash search --containment {input.query} {input.sample} -o {output}/results.csv  2> {log}
     """
+
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/do_query.benchmark"
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for sourmash - two lines in file :)
+            found = False
+            if len(lines) == 2:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
 
 rule install_software:
     conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/install_software.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/install_software.benchmark"
     shell: """
-       sourmash --version
+       sourmash --version 2> {log}
     """

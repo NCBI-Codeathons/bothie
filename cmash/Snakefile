@@ -4,56 +4,18 @@ import sys, os
 SAMPLES=config.get('metagenome_files', [])
 QUERY=config.get('query_file', '')
 
-# don't change these :)
-OUTPUT_DIR='outputs'
-SAMPLE_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.sample'))
-QUERY_PREP=os.path.abspath(os.path.join(OUTPUT_DIR, 'prep.query'))
-
-###
-### check configuration
-###
-
-print("Checking configuration...", file=sys.stderr)
-
-do_fail = False
-
-SAMPLES = [ x.strip() for x in SAMPLES ]
-SAMPLES = [ x for x in SAMPLES if x ]
-
-if not SAMPLES:
-    print("No files in 'metagenome_files' in the config?", file=sys.stderr)
-    do_fail = True
-
-if not QUERY:
-    print("No 'query' in the config?", file=sys.stderr)
-    do_fail = True
-
-# for sample in SAMPLES:
-
-for sample in SAMPLES:
-    if not os.path.exists(sample):
-        print(f"metagenome file directory '{SAMPLES}' does not exist.", file=sys.stderr)
-        do_fail = True
-
-
-if not os.path.exists(QUERY):
-    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
-    do_fail = True
-
-if do_fail:
-    print('Snakefile config checks FAILED.', file=sys.stderr)
-    sys.exit(-1)
-
-print("Configuration PASSED!", file=sys.stderr)
+# this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP.
+include: '../common.snakefile'
 
 ###
 ### actual rules to run something
 ###
 
-
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/cmash.yml"
+    log: f"{OUTPUT_DIR}/logs/cmash/prepare_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/prepare_sample.benchmark"
     shell: """
         rm -rf {output}
         mkdir -p {output}
@@ -66,17 +28,21 @@ rule prepare_sample:
 rule prepare_query:
     output: directory(QUERY_PREP)
     conda: "../conf/env/cmash.yml"
+    log: f"{OUTPUT_DIR}/logs/cmash/prepare_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/prepare_query.benchmark"
     shell: """
        rm -rf {output}
        mkdir -p {output}
        cp {QUERY} {output}/query
     """
 
-rule do_query:
+rule execute_query:
     input:
         query = f"{QUERY_PREP}/query",
         sample = f"{SAMPLE_PREP}/sample.h5",
-    output: directory("results")
+    output: directory(RESULTS_DIR)
+    log: f"{OUTPUT_DIR}/logs/cmash/execute_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/execute_query.benchmark"
     conda: "../conf/env/cmash.yml"
     shell: """
        rm -rf {output}
@@ -84,8 +50,27 @@ rule do_query:
        QueryDNADatabase.py {input.query} {input.sample} {output}/results.csv
     """
 
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for cmash - two lines in file :)
+            found = False
+            if len(lines) == 2:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
+
 rule install_software:
     conda: "../conf/env/cmash.yml"
+    log: f"{OUTPUT_DIR}/logs/cmash/install_software.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/install_software.benchmark"
     shell: """
 	MakeNodeGraph.py -h
     """
