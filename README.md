@@ -8,7 +8,7 @@ Metagenomic search is to query a gene or genome of interest against a metagenome
 
 ## What's the problem?
 It is important to know if a microbe is present in a metagenome.
-I have a set of microbes and I want to know which metagenomes I should look at and screen the sequence read archive for genes or genomes.
+If we have a set of microbes and we want to know which metagenomes we should look at, we can screen the sequence read archive (SRA) for genes or genomes and there is need for a tool that can do the screening.
 
 ### Real world application for bothie:
 + Identifying toxin biosynthesis gene clusters in environmental water samples.
