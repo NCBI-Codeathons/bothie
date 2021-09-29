@@ -1,0 +1,7 @@
+99%-identity reads to Wuhan-SC2
+-------------------------------
+
+illumina iseq100 sequencing of sars-cov-2 but I only selected the reads that align with 1 mutation to the genome, to make the dataset a bit harder to search. (otherwise many reads map perfectly)
+So, all reads have 1%-2% divergence to sars-cov-2 wuhan
+
+https://www.ncbi.nlm.nih.gov/sra/?term=SRR11826866
