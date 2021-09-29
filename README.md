@@ -1,20 +1,29 @@
 # bothie
 
-## What is Metagenomic Search?
+![Bothy](img/bothy.jpg)
 
+
+## What is Metagenomic Search?
+Metagenomic search is to query a genome of interest against a metagenome in order to determine is there's a hit.
 
 ## What's the problem?
+It is important to know if a microbe is present in a metagenome.
+I have a set of microbes and I want to know which metagenomes I should look at.
 
-
+Real world application for bothie:
+### Identifying toxin biosynthesis gene clusters in environmental water samples.
++ Microcystin BGC GenBank AF183401v1 : 64,534 bp
++ Toxic Harmful Algal Bloom in the Saint Lucie Estuary:
++ metagenome size 3,448,844 bp
++ We ran with sourmash and result=1 Therefore, positive control works.
 
 ## Why should we solve it?
-
+Finding the specific location of the microbes can be useful in determining which metagenomes might be responsible for the production of toxins.
 
 ## What is Bothie?
 Bothie is a pipeline that could be used for the the retrieval of metagenomic samples with user-provided long queries, such as genomes for viruses, bacteria, or fungi.
 
 ## How to use Bothie
-
 
 
 ## Installation Instructions
@@ -58,7 +67,6 @@ conda env create -n bothie -f environment.yml
 ```
 
 ## Team
-+ Titus Brown: ctbrown@ucdavis.edu
 + Tessa Pierce Ward: ntpierce@gmail.com
 + Olaitan Awe: laitanawe@gmail.com
 + Arianna krinos: akrinos@whoi.edu
@@ -70,3 +78,4 @@ conda env create -n bothie -f environment.yml
 + Alex Sweeten: alex.sweeten@gmail.com
 + Adrian Viehweger: adrian.viehweger@googlemail.com
 + Rayan Chikhi: rchikhi@gmail.com
++ Titus Brown: ctbrown@ucdavis.edu
