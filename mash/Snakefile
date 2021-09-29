@@ -62,7 +62,6 @@ rule prepare_sample:
        rm -fr {output}
        mkdir -p {output}
        # seems like we leave the sample/target in fasta/fastq etc. format
-       # ...so do nothing here.
     """
 
 rule prepare_query:
@@ -71,9 +70,7 @@ rule prepare_query:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       # seems like mash sketch FORCES a .msh extension on the end of your output string...
-       # not cool
-       mash sketch -k {ksize} {QUERY} -o {output}/query
+       mash sketch -k {ksize} {QUERY} -o {output}/query.msh
     """
 
 rule do_query:
