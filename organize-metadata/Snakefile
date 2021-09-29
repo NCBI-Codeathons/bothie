@@ -1,0 +1,75 @@
+configfile: "config.yaml"
+
+import sys, os
+import pandas as pd
+
+SAMPLESDIR=config['samples']
+ENVIRONMENTS=os.listdir(SAMPLESDIR)
+METAGENOME_IDS=dict(zip(ENVIRONMENTS,[os.listdir(os.path.join(SAMPLESDIR,env_curr)) for env_curr in ENVIRONMENTS]))
+LIST_OF_METAG_IDS=list(METAGENOME_IDS.values())
+
+ALL_METAGS = []
+[ALL_METAGS.extend(curr_list) for curr_list in LIST_OF_METAG_IDS]
+metags_simple = [curr.split(":")[-1] for curr in ALL_METAGS]
+
+ALL_ENVS = []
+[ALL_ENVS.extend([ENVIRONMENTS[curr_ind]] * len(LIST_OF_METAG_IDS[curr_ind])) for curr_ind in range(len(ENVIRONMENTS))]
+ENV_CORR = {"gut":"nmdc", "marine":"nmdc", "soil":""}
+
+OUTPUT_DIR=config['output']
+CENTRIFUGE_DIR=os.path.join(OUTPUT_DIR, 'parsed_centrifuge')
+KRAKEN_DIR=os.path.join(OUTPUT_DIR, 'parsed_kraken')
+
+RESULTS_DIR=os.path.join(OUTPUT_DIR, 'final_results')
+
+READS_CUTOFF=config["read_cutoff"]
+
+rule all:
+	input:
+		centrifuge = expand(os.path.join(CENTRIFUGE_DIR, "{env}", "{mg_simp}_centrifuge_species.parsed.tsv"),
+					zip, env = ALL_ENVS, mg_simp = metags_simple)
+
+#name	taxID	taxRank	genomeSize	numReads	numUniqueReads	abundance (centrifuge)
+rule centrifuge_rule:
+	input:
+		centrifuge_report = os.path.join(SAMPLESDIR, "{environment}", "nmdc:{metag_simple_id}",
+						 "ReadbasedAnalysis", "nmdc_{metag_simple_id}" + "_centrifuge_report.tsv")
+	output:
+		centrifuge_out = os.path.join(CENTRIFUGE_DIR, "{environment}", "{metag_simple_id}_centrifuge_species.parsed.tsv")
+	params:
+		centrifuge_dir = CENTRIFUGE_DIR,
+		reads_cutoff = READS_CUTOFF,
+		environment = "{environment}",
+		metag_simple_id = "{metag_simple_id}"
+	run:
+		centrifuge_file = pd.read_csv(input.centrifuge_report, sep = "\t")
+		centrifuge_file = centrifuge_file.loc[centrifuge_file.numUniqueReads > params.reads_cutoff,:]
+		centrifuge_file = centrifuge_file[["name","taxID","taxRank"]].drop_duplicates()
+		
+		tax_labels = list(set(centrifuge_file.taxRank))
+		for tax_label in tax_labels:
+			tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].drop_duplicates()
+			tax_curr_centrifuge.to_csv(os.path.join(params.centrifuge_dir, params.environment, params.metag_simple_id + "_centrifuge_" + tax_label + ".parsed.tsv"))
+
+#name   taxID   taxRank genomeSize      numReads        numUniqueReads  abundance (centrifuge)
+rule centrifuge_rule_soil:
+        input:
+                centrifuge_report = os.path.join(SAMPLESDIR, "{environment}", "{metag_simple_id}",
+                                                 "ReadbasedAnalysis", "centrifuge", "{metag_simple_id}" + ".report.tsv")
+        output:
+                centrifuge_out = os.path.join(CENTRIFUGE_DIR, "{environment}", "{metag_simple_id}_centrifuge_species.parsed.tsv")
+        params:
+                centrifuge_dir = CENTRIFUGE_DIR,
+                reads_cutoff = READS_CUTOFF,
+                environment = "{environment}",
+                metag_simple_id = "{metag_simple_id}"
+        run:
+                centrifuge_file = pd.read_csv(input.centrifuge_report, sep = "\t")
+                centrifuge_file = centrifuge_file.loc[centrifuge_file.numUniqueReads > params.reads_cutoff,:]
+                centrifuge_file = centrifuge_file[["name","taxID","taxRank"]].drop_duplicates()
+
+                tax_labels = list(set(centrifuge_file.taxRank))
+                for tax_label in tax_labels:
+                        tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].drop_duplicates()
+                        tax_curr_centrifuge.to_csv(os.path.join(params.centrifuge_dir, params.environment, params.metag_simple_id + "_centrifuge_" + tax_label + ".parsed.tsv"))
+
