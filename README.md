@@ -29,10 +29,6 @@ Bothie is a pipeline that can be used for the identification of metagenomic samp
 
 ## How to use Bothie
 
-
-## Installation Instructions
-## quickstart
-
 1. [Install `conda`](https://bioconda.github.io/user/install.html#install-conda)
 
 ```
