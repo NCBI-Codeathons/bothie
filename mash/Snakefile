@@ -10,7 +10,6 @@ OUTPUT_DIR=config.get('output_dir', 'outputs')
 RESULTS_DIR=os.path.join(OUTPUT_DIR, 'results')
 SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
 QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
-RESULTS_DIR=os.path.join(OUTPUT_DIR, 'results')
 
 ###
 ### check configuration
@@ -21,13 +20,12 @@ print("Checking configuration...", file=sys.stderr)
 do_fail = False
 
 SAMPLES = [ x.strip() for x in SAMPLES ]
-SAMPLES = [ x for x in SAMPLES if x ]
+SAMPLES = [ os.path.abspath(x) for x in SAMPLES if x ]
 
 if not SAMPLES:
     print("No files in 'metagenome_files' in the config?", file=sys.stderr)
     do_fail = True
 
-print('QUERY is:', (QUERY,), file=sys.stderr)
 #if not QUERY:
 #    print("No 'query' in the config?", file=sys.stderr)
 #    do_fail = True
@@ -47,16 +45,11 @@ for sample in SAMPLES:
 #    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
 #    do_fail = True
 
-if not OUTPUT_DIR.startswith('/'):
-    print(f"output directory '{OUTPUT_DIR}' is not an absolute path.")
-    do_fail = True
-
 if do_fail:
     print('Snakefile config checks FAILED.', file=sys.stderr)
     sys.exit(-1)
 
 print("Configuration PASSED!", file=sys.stderr)
-print('output directory:', OUTPUT_DIR, file=sys.stderr)
 
 ###
 ### actual rules to run something
@@ -64,35 +57,38 @@ print('output directory:', OUTPUT_DIR, file=sys.stderr)
 
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
-    conda: "../conf/env/sourmash4.yml"
+    conda: "../conf/env/mash2.yml"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {SAMPLES} -o {output}/sample.sig
+       # seems like we leave the sample/target in fasta/fastq etc. format
     """
 
 rule prepare_query:
     output: directory(QUERY_PREP)
-    conda: "../conf/env/sourmash4.yml"
-    params:
-        name = os.path.basename(QUERY)
+    conda: "../conf/env/mash2.yml"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig \
-          --merge {params.name}
+       mash sketch -k {ksize} {QUERY} -o {output}/query.msh
     """
 
 rule execute_query_command:
     input:
-        query = f"{QUERY_PREP}/query.sig",
-        sample = f"{SAMPLE_PREP}/sample.sig",
+        # this is annoying: mash seems to REQUIRE that the query have a .msh extension...
+        # not cool. initially I was renaming the forced query.sig.msh file to query.sig,
+        # but it just doesn't seem to like it.
+        query = f"{QUERY_PREP}/query.msh",
+        sample = SAMPLES,
     output: directory(RESULTS_DIR)
-    conda: "../conf/env/sourmash4.yml"
+    conda: "../conf/env/mash2.yml"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash search --containment {input.query} {input.sample} -o {output}/results.csv
+       # doesn't seem like mash screen supports output direction
+       mash screen {input.query} {input.sample} > {output}/results.csv
+       # if we want to print the results still
+       cat {output}/results.csv
     """
 
 rule do_query:
@@ -104,7 +100,7 @@ rule do_query:
 
             # victory condition for sourmash - two lines in file :)
             found = False
-            if len(lines) == 2:
+            if len(lines) == 1:
                 found = True
         with open(input.dir + '/RESULT', 'wt') as fp:
             if found:
@@ -112,8 +108,9 @@ rule do_query:
             else:
                 fp.write('0\n')
 
+
 rule install_software:
-    conda: "../conf/env/sourmash4.yml"
+    conda: "../conf/env/mash2.yml"
     shell: """
-       sourmash --version
+       mash --version
     """
