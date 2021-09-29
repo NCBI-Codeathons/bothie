@@ -55,6 +55,8 @@ print("Configuration PASSED!", file=sys.stderr)
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/cmash.yml"
+    log: f"{OUTPUT_DIR}/logs/cmash/prepare_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/prepare_sample.benchmark"
     shell: """
         rm -rf {output}
         mkdir -p {output}
@@ -67,6 +69,8 @@ rule prepare_sample:
 rule prepare_query:
     output: directory(QUERY_PREP)
     conda: "../conf/env/cmash.yml"
+    log: f"{OUTPUT_DIR}/logs/cmash/prepare_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/prepare_query.benchmark"
     shell: """
        rm -rf {output}
        mkdir -p {output}
@@ -78,6 +82,8 @@ rule execute_query:
         query = f"{QUERY_PREP}/query",
         sample = f"{SAMPLE_PREP}/sample.h5",
     output: directory(RESULTS_DIR)
+    log: f"{OUTPUT_DIR}/logs/cmash/execute_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/execute_query.benchmark"
     conda: "../conf/env/cmash.yml"
     shell: """
        rm -rf {output}
@@ -104,6 +110,8 @@ rule do_query:
 
 rule install_software:
     conda: "../conf/env/cmash.yml"
+    log: f"{OUTPUT_DIR}/logs/cmash/install_software.log"
+    benchmark: f"{OUTPUT_DIR}/logs/cmash/install_software.benchmark"
     shell: """
 	MakeNodeGraph.py -h
     """
