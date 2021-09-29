@@ -20,7 +20,7 @@ print("Checking configuration...", file=sys.stderr)
 do_fail = False
 
 SAMPLES = [ x.strip() for x in SAMPLES ]
-SAMPLES = [ x for x in SAMPLES if x ]
+SAMPLES = [ os.path.abspath(x) for x in SAMPLES if x ]
 
 if not SAMPLES:
     print("No files in 'metagenome_files' in the config?", file=sys.stderr)
@@ -62,8 +62,7 @@ rule prepare_sample:
        rm -fr {output}
        mkdir -p {output}
        # seems like we leave the sample/target in fasta/fastq etc. format
-       # instead of sketching it, we'll just copy it with a new name
-       cp {SAMPLES} {output}/sample.sig
+       # ...so do nothing here.
     """
 
 rule prepare_query:
@@ -74,7 +73,7 @@ rule prepare_query:
        mkdir -p {output}
        # seems like mash sketch FORCES a .msh extension on the end of your output string...
        # not cool
-       mash sketch -k {ksize} {QUERY} -o {output}/query.sig
+       mash sketch -k {ksize} {QUERY} -o {output}/query
     """
 
 rule do_query:
@@ -82,8 +81,8 @@ rule do_query:
         # this is annoying: mash seems to REQUIRE that the query have a .msh extension...
         # not cool. initially I was renaming the forced query.sig.msh file to query.sig,
         # but it just doesn't seem to like it.
-        query = f"{QUERY_PREP}/query.sig.msh",
-        sample = f"{SAMPLE_PREP}/sample.sig",
+        query = f"{QUERY_PREP}/query.msh",
+        sample = SAMPLES,
     output: directory(RESULTS_DIR)
     conda: "../conf/env/mash2.yml"
     shell: """
