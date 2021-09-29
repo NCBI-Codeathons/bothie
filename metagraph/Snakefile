@@ -14,6 +14,7 @@ except ValueError:
 # this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
 include: '../common.snakefile'
 
+ANNOTATIONS=f"{QUERY_PREP}/query.column.annodbg"
 
 ###
 ### actual rules to run something
@@ -27,9 +28,6 @@ rule prepare_sample:
     shell: """
         rm -fr {output}
         mkdir -p {output}
-        # DATA="../tests/data/transcripts_1000.fa"
-        # ./metagraph build -k 12 -o transcripts_1000 $DATA
-
         metagraph build -k {ksize} -o {output}/sample.dbg {SAMPLES}
 
     """
@@ -46,10 +44,8 @@ rule prepare_query:
 
 rule execute_query_command:
     input:
-        query = f"{QUERY}",
         sample = f"{SAMPLE_PREP}/sample.dbg",
     output: directory(RESULTS_DIR)
-    annotation_file: f"{QUERY_PREP}/{query}.column.annodbg"
     log: f"{OUTPUT_DIR}/logs/metagraph/execute_query.log"
     benchmark: f"{OUTPUT_DIR}/logs/metagraph/execute_query.benchmark"
     conda: "./env.yml"
@@ -57,14 +53,12 @@ rule execute_query_command:
         rm -fr {output}
         mkdir -p {output}
 
-        #./metagraph annotate -i transcripts_1000.dbg --anno-filename -o transcripts_1000 $DATA
-        #./metagraph query -i transcripts_1000.dbg -a transcripts_1000.column.annodbg $DATA
-        #./metagraph stats -a transcripts_1000.column.annodbg transcripts_1000.dbg
-
-        metagraph annotate -i {sample} --anno-filename -o {annotation_file} {query}
-        metagraph query -i {sample} -a {annotation_file} {query}
-        # metagraph stats -a {annotation_file} {query}
-
+        metagraph annotate -i {SAMPLE_PREP}/sample.dbg --anno-filename -o {ANNOTATIONS} {QUERY}
+        #metagraph annotate -i {sample} --anno-filename -o {ANNOTATIONS} {QUERY}
+        metagraph query -i {SAMPLE_PREP}/sample.dbg -a {ANNOTATIONS} {QUERY}
+        #metagraph query -i {sample} -a {ANNOTATIONS} {QUERY}
+        metagraph stats -a {ANNOTATIONS} {SAMPLE_PREP}/sample.dbg > {output}/results.csv
+        #metagraph stats -a {ANNOTATIONS} {sample} > {output}/results.csv
     """
 
 rule do_query:
