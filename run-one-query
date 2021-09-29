@@ -18,7 +18,7 @@ import argparse
 
 
 def run_snakemake(target, extra_args, tool_dir):
-    cmd = f"snakemake -j 1 {target} {' '.join(extra_args)}"
+    cmd = f"snakemake -p -j 1 {target} {' '.join(extra_args)}"
     print('running:', (cmd,))
     subprocess.check_call(cmd, shell=True, cwd=tool_dir)
 

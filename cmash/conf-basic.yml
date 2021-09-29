@@ -1,0 +1,4 @@
+metagenome_files: 
+- ../data/genome-s10+s11.fa.gz
+
+# cmash config params
