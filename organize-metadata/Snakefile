@@ -51,7 +51,7 @@ rule centrifuge_rule:
 			tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
 			tax_curr_centrifuge["environment"] = params.environment
 			tax_curr_centrifuge["sampleID"] = params.metag_simple_id
-			tax_curr_centrifuge["taxLevel"] = tax_label
+			tax_curr_centrifuge["mappingTool"] = "centrifuge"
 			tax_curr_centrifuge.to_csv(os.path.join(params.centrifuge_dir, params.environment, params.metag_simple_id + "_centrifuge_" + tax_label + ".parsed.tsv"))
 
 #name   taxID   taxRank genomeSize      numReads        numUniqueReads  abundance (centrifuge)
@@ -74,5 +74,8 @@ rule centrifuge_rule_soil:
                 tax_labels = list(set(centrifuge_file.taxRank))
                 for tax_label in tax_labels:
                         tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].drop_duplicates()
+			tax_curr_centrifuge["environment"] = params.environment
+                        tax_curr_centrifuge["sampleID"] = params.metag_simple_id
+                        tax_curr_centrifuge["mappingTool"] = "centrifuge"
                         tax_curr_centrifuge.to_csv(os.path.join(params.centrifuge_dir, params.environment, params.metag_simple_id + "_centrifuge_" + tax_label + ".parsed.tsv"))
 
