@@ -71,7 +71,7 @@ conda env create -n bothie -f environment.yml
 + Olaitan Awe: laitanawe@gmail.com
 + Arianna krinos: akrinos@whoi.edu
 + Minghand Lee: matchy@snu.ac.kr
-+ Rene Miller-Xavier: rmillerxavie2017@fau.edu
++ René Miller-Xavier: rmillerxavie2017@fau.edu
 + Rodrigo Polo: ropolo@gmail.com
 + Adelaide Rhodes: adelaide.rhodes@nih.gov
 + Jack Roddy: jack.w.roddy@gmail.com
