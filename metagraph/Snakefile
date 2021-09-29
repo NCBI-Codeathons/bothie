@@ -21,7 +21,7 @@ include: '../common.snakefile'
 
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
-    conda: "../conf/env/metagraph.yml"
+    conda: "./env.yml"
     log: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.log"
     benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.benchmark"
     shell: """
@@ -36,7 +36,7 @@ rule prepare_sample:
 
 rule prepare_query:
     output: directory(QUERY_PREP)
-    conda: "../conf/env/metagraph.yml"
+    conda: "./env.yml"
     log: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.log"
     benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.benchmark"
     shell: """
@@ -52,7 +52,7 @@ rule execute_query_command:
     annotation_file: f"{QUERY_PREP}/{query}.column.annodbg"
     log: f"{OUTPUT_DIR}/logs/metagraph/execute_query.log"
     benchmark: f"{OUTPUT_DIR}/logs/metagraph/execute_query.benchmark"
-    conda: "../conf/env/metagraph.yml"
+    conda: "./env.yml"
     shell: """
         rm -fr {output}
         mkdir -p {output}
@@ -86,7 +86,7 @@ rule do_query:
 
 
 rule install_software:
-    conda: "../conf/env/metagraph.yml"
+    conda: "./env.yml"
     log: f"{OUTPUT_DIR}/logs/metagraph/install_software.log"
     benchmark: f"{OUTPUT_DIR}/logs/metagraph/install_software.benchmark"
     shell: """
