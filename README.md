@@ -4,14 +4,14 @@
 
 
 ## What is Metagenomic Search?
-Metagenomic search is to query a genome of interest against a metagenome in order to determine is there's a hit.
+Metagenomic search is to query a gene or genome of interest against a metagenome in order to determine if there's a hit.
 
 ## What's the problem?
 It is important to know if a microbe is present in a metagenome.
-I have a set of microbes and I want to know which metagenomes I should look at.
+I have a set of microbes and I want to know which metagenomes I should look at and screen the sequence read archive for genes or genomes.
 
-Real world application for bothie:
-### Identifying toxin biosynthesis gene clusters in environmental water samples.
+### Real world application for bothie:
++ Identifying toxin biosynthesis gene clusters in environmental water samples.
 + Microcystin BGC GenBank AF183401v1 : 64,534 bp
 + Toxic Harmful Algal Bloom in the Saint Lucie Estuary:
 + metagenome size 3,448,844 bp
