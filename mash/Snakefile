@@ -26,9 +26,9 @@ if not SAMPLES:
     print("No files in 'metagenome_files' in the config?", file=sys.stderr)
     do_fail = True
 
-if not QUERY:
-    print("No 'query' in the config?", file=sys.stderr)
-    do_fail = True
+#if not QUERY:
+#    print("No 'query' in the config?", file=sys.stderr)
+#    do_fail = True
 
 try:
     ksize = int(ksize)
@@ -41,9 +41,9 @@ for sample in SAMPLES:
         print(f"metagenome file '{sample}' does not exist.", file=sys.stderr)
         do_fail = True
 
-if not os.path.exists(QUERY):
-    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
-    do_fail = True
+#if not os.path.exists(QUERY):
+#    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
+#    do_fail = True
 
 if do_fail:
     print('Snakefile config checks FAILED.', file=sys.stderr)
@@ -73,7 +73,7 @@ rule prepare_query:
        mash sketch -k {ksize} {QUERY} -o {output}/query.msh
     """
 
-rule do_query:
+rule execute_query_command:
     input:
         # this is annoying: mash seems to REQUIRE that the query have a .msh extension...
         # not cool. initially I was renaming the forced query.sig.msh file to query.sig,
@@ -90,6 +90,24 @@ rule do_query:
        # if we want to print the results still
        cat {output}/results.csv
     """
+
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for sourmash - two lines in file :)
+            found = False
+            if len(lines) == 1:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
+
 
 rule install_software:
     conda: "../conf/env/mash2.yml"
