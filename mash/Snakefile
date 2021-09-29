@@ -58,6 +58,8 @@ print("Configuration PASSED!", file=sys.stderr)
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/mash2.yml"
+    log: f"{OUTPUT_DIR}/logs/mash/prepare_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/mash/prepare_sample.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
@@ -67,10 +69,12 @@ rule prepare_sample:
 rule prepare_query:
     output: directory(QUERY_PREP)
     conda: "../conf/env/mash2.yml"
+    log: f"{OUTPUT_DIR}/logs/mash/prepare_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/mash/prepare_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       mash sketch -k {ksize} {QUERY} -o {output}/query.msh
+       mash sketch -k {ksize} {QUERY} -o {output}/query.msh 2> {log}
     """
 
 rule execute_query_command:
@@ -81,12 +85,14 @@ rule execute_query_command:
         query = f"{QUERY_PREP}/query.msh",
         sample = SAMPLES,
     output: directory(RESULTS_DIR)
+    log: f"{OUTPUT_DIR}/logs/mash/execute_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/mash/execute_query.benchmark"
     conda: "../conf/env/mash2.yml"
     shell: """
        rm -fr {output}
        mkdir -p {output}
        # doesn't seem like mash screen supports output direction
-       mash screen {input.query} {input.sample} > {output}/results.csv
+       mash screen {input.query} {input.sample} > {output}/results.csv 2> {log}
        # if we want to print the results still
        cat {output}/results.csv
     """
@@ -111,6 +117,8 @@ rule do_query:
 
 rule install_software:
     conda: "../conf/env/mash2.yml"
+    log: f"{OUTPUT_DIR}/logs/mash/install_software.log"
+    benchmark: f"{OUTPUT_DIR}/logs/mash/install_software.benchmark"
     shell: """
-       mash --version
+       mash --version 2> {log}
     """
