@@ -1,4 +1,4 @@
-# bothie
+# bothie /ˈbäTHē/
 
 ![Bothy](img/bothy.jpg)
 
