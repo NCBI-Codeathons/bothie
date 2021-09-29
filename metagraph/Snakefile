@@ -1,0 +1,94 @@
+import sys, os
+
+# load stuff from config file
+SAMPLES=config.get('metagenome_files', [])
+QUERY=config.get('query_file', '')
+ksize = config.get('ksize', 'unset')
+
+try:
+    ksize = int(ksize)
+except ValueError:
+    print(f"Invalid ksize {repr(ksize)}", file=sys.stderr)
+    raise
+
+# this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
+include: '../common.snakefile'
+
+
+###
+### actual rules to run something
+###
+
+rule prepare_sample:
+    output: directory(SAMPLE_PREP)
+    conda: "../conf/env/metagraph.yml"
+    log: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.benchmark"
+    shell: """
+        rm -fr {output}
+        mkdir -p {output}
+        # DATA="../tests/data/transcripts_1000.fa"
+        # ./metagraph build -k 12 -o transcripts_1000 $DATA
+
+        metagraph build -k {ksize} -o {output}/sample.dbg {SAMPLES}
+
+    """
+
+rule prepare_query:
+    output: directory(QUERY_PREP)
+    conda: "../conf/env/metagraph.yml"
+    log: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.benchmark"
+    shell: """
+        rm -fr {output}
+        mkdir -p {output}
+    """
+
+rule execute_query_command:
+    input:
+        query = f"{QUERY}",
+        sample = f"{SAMPLE_PREP}/sample.dbg",
+    output: directory(RESULTS_DIR)
+    annotation_file: f"{QUERY_PREP}/{query}.column.annodbg"
+    log: f"{OUTPUT_DIR}/logs/metagraph/execute_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/execute_query.benchmark"
+    conda: "../conf/env/metagraph.yml"
+    shell: """
+        rm -fr {output}
+        mkdir -p {output}
+
+        #./metagraph annotate -i transcripts_1000.dbg --anno-filename -o transcripts_1000 $DATA
+        #./metagraph query -i transcripts_1000.dbg -a transcripts_1000.column.annodbg $DATA
+        #./metagraph stats -a transcripts_1000.column.annodbg transcripts_1000.dbg
+
+        metagraph annotate -i {sample} --anno-filename -o {annotation_file} {query}
+        metagraph query -i {sample} -a {annotation_file} {query}
+        # metagraph stats -a {annotation_file} {query}
+
+    """
+
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for sourmash - two lines in file :)
+            found = False
+            if len(lines) == 1:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
+
+
+rule install_software:
+    conda: "../conf/env/metagraph.yml"
+    log: f"{OUTPUT_DIR}/logs/metagraph/install_software.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/install_software.benchmark"
+    shell: """
+        metagraph -h
+    """
