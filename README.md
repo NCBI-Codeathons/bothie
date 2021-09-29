@@ -21,9 +21,11 @@ Bothie is a pipeline that can be used for the identification of metagenomic samp
 
 ### Real world application for bothie:
 + Identifying toxin biosynthesis gene clusters in environmental water samples.
-+ Microcystin BGC GenBank AF183401v1 : 64,534 bp
-+ Toxic Harmful Algal Bloom in the Saint Lucie Estuary: metagenome size 3,448,844 bp
-+ We ran with sourmash and result=56% similarity Therefore, positive control works.
++ Query - Microcystin BGC GenBank AF183401v1 : 64,534 bp
++ Reference - Toxic Harmful Algal Bloom in the Saint Lucie Estuary: metagenome size 3,448,844 bp
++ Method - sourmash
++ Result - 56% similarity
++ Conclusion - Positive control works.
 
 ## How to use Bothie
 
