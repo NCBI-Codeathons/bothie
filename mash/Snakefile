@@ -62,8 +62,6 @@ rule prepare_sample:
        rm -fr {output}
        mkdir -p {output}
        # seems like we leave the sample/target in fasta/fastq etc. format
-       # instead of sketching it, we'll just copy it with a new name
-       cp {SAMPLES} {output}/sample.sig
     """
 
 rule prepare_query:
