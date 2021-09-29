@@ -26,6 +26,7 @@ def main():
     p.add_argument("--queries", required=True, nargs='+',
                    help="one or more query filenames")
     p.add_argument('--output-dir', default='outputs')
+    p.add_argument('--timelog', default=None)
     args = p.parse_args()
 
     queries = args.queries
@@ -46,6 +47,10 @@ def main():
     tool_dir = args.tool
     config_file = os.path.abspath(args.config_file)
 
+    timelog_fp = None
+    if args.timelog:
+        timelog_fp = open(args.timelog, 'wt')
+
     # note: -C / config overrides need to go at end of list
     snakemake_args = ["--use-conda",
                       f"--configfile {config_file}"]
@@ -62,9 +67,9 @@ def main():
     config_args = f"-C output_dir={args.output_dir}"
     this_snakemake_args.append(config_args)
 
-    print(datetime.datetime.now(), 'START SAMPLE PREP')
+    print(datetime.datetime.now(), 'START SAMPLE PREP', file=timelog_fp)
     run_snakemake('prepare_sample', this_snakemake_args, tool_dir)
-    print(datetime.datetime.now(), 'END SAMPLE PREP')
+    print(datetime.datetime.now(), 'END SAMPLE PREP', file=timelog_fp)
 
     results = []
 
@@ -75,13 +80,13 @@ def main():
         config_args = f"-C query_file={query} output_dir={args.output_dir}"
         this_snakemake_args.append(config_args)
 
-        print(datetime.datetime.now(), 'START QUERY PREP')
+        print(datetime.datetime.now(), 'START QUERY PREP', file=timelog_fp)
         run_snakemake('prepare_query', this_snakemake_args, tool_dir)
-        print(datetime.datetime.now(), 'END QUERY PREP')
+        print(datetime.datetime.now(), 'END QUERY PREP', file=timelog_fp)
 
-        print(datetime.datetime.now(), 'START DO QUERY')
+        print(datetime.datetime.now(), 'START DO QUERY', file=timelog_fp)
         run_snakemake('do_query', this_snakemake_args, tool_dir)
-        print(datetime.datetime.now(), 'END DO QUERY')
+        print(datetime.datetime.now(), 'END DO QUERY', file=timelog_fp)
 
         result_file = os.path.join(args.output_dir, "results", "RESULT")
         assert os.path.exists(result_file)
