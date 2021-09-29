@@ -70,16 +70,11 @@ rule prepare_query:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       # seems like mash sketch FORCES a .msh extension on the end of your output string...
-       # not cool
-       mash sketch -k {ksize} {QUERY} -o {output}/query.sig
+       mash sketch -k {ksize} {QUERY} -o {output}/query.msh
     """
 
 rule do_query:
     input:
-        # this is annoying: mash seems to REQUIRE that the query have a .msh extension...
-        # not cool. initially I was renaming the forced query.sig.msh file to query.sig,
-        # but it just doesn't seem to like it.
         query = f"{QUERY_PREP}/query.msh",
         sample = f"{SAMPLE_PREP}/sample.sig",
     output: directory(RESULTS_DIR)
