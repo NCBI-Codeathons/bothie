@@ -7,7 +7,8 @@
 Metagenomic search is to query a gene or genome of interest against a metagenome in order to determine if there's a hit.
 
 ## What's the problem?
-The Sequence Read Archive (SRA) is exponentially growing since Next Generation Sequencing has become more affordable. Microbial environments are being explored on a genomic level like never before. In order to discover interesting things, we can screen the sequence read archive (SRA) for genes or genomes and there is need for a tool that can do the high throughput screening.
+The Sequence Read Archive (SRA) is exponentially growing since Next Generation Sequencing has become more affordable. Microbial environments are being explored on a genomic level like never before. In order to discover genes or genomes of interest in this vast nucleotide database, high throughput methods needs to be developed.
+
 
 It is important to know if a microbe is present in a metagenome.
 If we have a set of microbes and we want to know which metagenomes we should look at, we can screen the sequence read archive (SRA) for genes or genomes and there is need for a tool that can do the high throughput screening.
