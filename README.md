@@ -4,14 +4,20 @@
 
 
 ## What is Metagenomic Search?
-Metagenomic search is to query a gene or genome of interest against a metagenome in order to determine if there's a hit.
+Metagenomic search is to query a gene or genome of interest against a metagenome in order to determine its presence or absence.
 
 ## What's the problem?
-The Sequence Read Archive (SRA) is exponentially growing since Next Generation Sequencing has become more affordable. Microbial environments are being explored on a genomic level like never before. In order to discover genes or genomes of interest in this vast nucleotide database, high throughput methods needs to be developed.
-
+The Sequence Read Archive (SRA) is exponentially growing since Next Generation Sequencing has become more affordable. Microbial environments are being explored on a genomic level like never before. In order to discover genes or genomes of interest in this vast nucleotide database, high throughput methods need to be developed.
 
 It is important to know if a microbe is present in a metagenome.
 If we have a set of microbes and we want to know which metagenomes we should look at, we can screen the sequence read archive (SRA) for genes or genomes and there is need for a tool that can do the high throughput screening.
+
+## Why should we solve it?
+These unexplored metagenomes contain novel unculturable microbes whose function within microbial systems is unknown. Identifying metagenomes that contain specific microbes will be helpful in exloring their potential to produce interesting compounds (e.g. novel antibiotics, medicines, toxins) and and their role in geochemical cycling (e.g. nitrogen and carbon cycle).
+
+
+## What is Bothie?
+Bothie is a pipeline that can be used for the the retrieval of metagenomic samples with user-provided long queries such as viral, bacterial, fungal genomes and or biosynthetic gene clusters.
 
 ### Real world application for bothie:
 + Identifying toxin biosynthesis gene clusters in environmental water samples.
@@ -19,12 +25,6 @@ If we have a set of microbes and we want to know which metagenomes we should loo
 + Toxic Harmful Algal Bloom in the Saint Lucie Estuary:
 + metagenome size 3,448,844 bp
 + We ran with sourmash and result=1 Therefore, positive control works.
-
-## Why should we solve it?
-Finding the specific location of the microbes can be useful in determining which metagenomes might be responsible for the production of toxins.
-
-## What is Bothie?
-Bothie is a pipeline that could be used for the the retrieval of metagenomic samples with user-provided long queries, such as genomes for viruses, bacteria, or fungi.
 
 ## How to use Bothie
 
