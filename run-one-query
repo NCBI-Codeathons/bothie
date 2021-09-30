@@ -69,7 +69,6 @@ def main():
     tool_dir = args.tool
     config_file = os.path.abspath(args.config_file)
 
-    # note: -C / config overrides need to go at end of list
     with open(config_file, 'rt') as fp:
         config_d = yaml.safe_load(fp)
 
