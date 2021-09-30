@@ -15,41 +15,48 @@ import subprocess
 import datetime
 import shutil
 import argparse
+import tempfile
+import yaml
 
 
-def run_snakemake(target, extra_args, tool_dir):
-    cmd = f"snakemake -p -j 1 {target} {' '.join(extra_args)}"
+def run_snakemake(target, output_dir, config_d, tool_dir):
+    assert output_dir.startswith('/') # abs path
+    config_filename = os.path.join(output_dir, 'conf.yml')
+    print('writing summary config file', config_filename)
+
+    with open(config_filename, 'wt') as fp:
+        yaml.dump(config_d, fp)
+
+    cmd = f"snakemake --use-conda -p -j 1 --configfile={config_filename} {target}"
     print('running:', (cmd,))
     subprocess.check_call(cmd, shell=True, cwd=tool_dir)
 
-def run_protein_snakemake(target, extra_args, tool_dir):
-    cmd = f"snakemake -p -j 1 {target} {' '.join(extra_args)}"
-    print('running:', (cmd,))
-    subprocess.check_call(cmd, shell=True, cwd=tool_dir)
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('config_file', help='config file, YAML or JSON')
     p.add_argument('tool', help='tool directory, e.g. sourmash')
-    #p.add_argument('query', help='query sequence(s)')
-    p.add_argument('type', help='protein, or DNA')
+    p.add_argument('query', help='query sequence(s)')
+    p.add_argument('type', help='protein, or dna')
     p.add_argument('--no-clean-query', help="do not reset query prep; reuse query prep", action="store_true")
     p.add_argument('--output-dir')
     args = p.parse_args()
 
     # fix paths so that they are relative to cwd
-#    args.query = os.path.abspath(args.query)
-    # if not os.path.isfile(args.query):
-    #     print(f'ERROR: specified query ({args.query}) is not a file! Is the path correct?')
-    #     sys.exit(-1)
+    args.query = os.path.abspath(args.query)
+    if not os.path.isfile(args.query):
+        print(f'ERROR: specified query ({args.query}) is not a file! Is the path correct?')
+        sys.exit(-1)
+
     if args.output_dir:
         args.output_dir = os.path.abspath(args.output_dir)
     else:
-        # we'll set a default output path to outputs/<tool name>
-        args.output_dir = os.path.abspath('outputs/' + args.tool)
+        # we'll set a default output path to outputs.<random>
+        d = tempfile.mkdtemp(prefix=f'outputs.{args.tool}.', dir='.')
+        args.output_dir = os.path.abspath(d)
 
     output_dir = args.output_dir
-    if not args.no_clean_query:
+    if not args.no_clean_query and os.path.exists(output_dir):
         print(f'removing query prep from output_dir {output_dir}/')
         try:
             query_prep = os.path.join(args.output_dir, 'prep.query')
@@ -62,17 +69,20 @@ def main():
 
     tool_dir = args.tool
     config_file = os.path.abspath(args.config_file)
-    data_type = os.path.abspath(args.type)
 
-    # note: -C / config overrides need to go at end of list
-    snakemake_args = ["--use-conda",
-                      f"--configfile {config_file}",
-                      # f"-C query_file={args.query} output_dir={args.output_dir}"]
-                      f"-C output_dir={args.output_dir}",
-                      f"-C data_type={args.type}"]
+    with open(config_file, 'rt') as fp:
+        config_d = yaml.safe_load(fp)
+
+    config_d['query_file'] = args.query
+
+    config_d['sample_prep_dir'] = os.path.join(output_dir, 'prep.sample')
+    config_d['log_dir'] = os.path.join(output_dir, 'logs')
+    config_d['query_prep_dir'] = os.path.join(output_dir, 'prep.query')
+    config_d['results_dir'] = os.path.join(output_dir, 'results')
+
     print('installing software:')
 
-    run_snakemake('install_software', snakemake_args, tool_dir)
+    run_snakemake('install_software', output_dir, config_d, tool_dir)
 
     if args.type == protein :
 
@@ -94,17 +104,22 @@ def main():
 
     else:
 
-        print(datetime.datetime.now(), 'START SAMPLE PREP')
-        run_snakemake('prepare_sample', snakemake_args, tool_dir)
-        print(datetime.datetime.now(), 'END SAMPLE PREP')
+    print(datetime.datetime.now(), 'START SAMPLE PREP')
+    run_snakemake('prepare_sample', output_dir, config_d,
+                  tool_dir)
+    print(datetime.datetime.now(), 'END SAMPLE PREP')
 
-        print(datetime.datetime.now(), 'START QUERY PREP')
-        run_snakemake('prepare_query', snakemake_args, tool_dir)
-        print(datetime.datetime.now(), 'END QUERY PREP')
+    print(datetime.datetime.now(), 'START QUERY PREP')
+    run_snakemake('prepare_query', output_dir, config_d,
+                  tool_dir)
+    print(datetime.datetime.now(), 'END QUERY PREP')
 
     print(datetime.datetime.now(), 'START DO QUERY')
-    run_snakemake('do_query', snakemake_args, tool_dir)
+    run_snakemake('do_query', output_dir, config_d, tool_dir)
     print(datetime.datetime.now(), 'END DO QUERY')
+
+    print('')
+    print('results in', args.output_dir)
 
 if __name__ == '__main__':
     main()
