@@ -3,7 +3,10 @@ import sys, os
 # load stuff from config file
 SAMPLES=config.get('metagenome_files', [])
 QUERY=config.get('query_file', '')
+minfrac = config.get('minimum_kmer_fraction', 0.5)
+molecule = config.get('molecule', 'DNA')  # Protein
 ksize = config.get('ksize', 'unset')
+
 
 try:
     ksize = int(ksize)
@@ -14,7 +17,6 @@ except ValueError:
 # this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
 include: '../common.snakefile'
 
-ANNOTATIONS=f"{QUERY_PREP}/query.column.annodbg"
 
 ###
 ### actual rules to run something
@@ -28,8 +30,9 @@ rule prepare_sample:
     shell: """
         rm -fr {output}
         mkdir -p {output}
-        metagraph build -k {ksize} -o {output}/sample.dbg {SAMPLES}
 
+        metagraph_{molecule} build -k {ksize} -o {output}/graph.dbg {SAMPLES}
+        metagraph_{molecule} annotate -i {output}/graph.dbg --anno-filename -o {output}/graph.column.annodbg {SAMPLES}
     """
 
 rule prepare_query:
@@ -44,7 +47,8 @@ rule prepare_query:
 
 rule execute_query_command:
     input:
-        sample = f"{SAMPLE_PREP}/sample.dbg",
+        graph = f"{SAMPLE_PREP}/graph.dbg",
+        colors = f"{SAMPLE_PREP}/graph.column.annodbg",
     output: directory(RESULTS_DIR)
     log: f"{OUTPUT_DIR}/logs/metagraph/execute_query.log"
     benchmark: f"{OUTPUT_DIR}/logs/metagraph/execute_query.benchmark"
@@ -53,12 +57,7 @@ rule execute_query_command:
         rm -fr {output}
         mkdir -p {output}
 
-        metagraph annotate -i {SAMPLE_PREP}/sample.dbg --anno-filename -o {ANNOTATIONS} {QUERY}
-        #metagraph annotate -i {sample} --anno-filename -o {ANNOTATIONS} {QUERY}
-        metagraph query -i {SAMPLE_PREP}/sample.dbg -a {ANNOTATIONS} {QUERY}
-        #metagraph query -i {sample} -a {ANNOTATIONS} {QUERY}
-        metagraph stats -a {ANNOTATIONS} {SAMPLE_PREP}/sample.dbg > {output}/results.csv
-        #metagraph stats -a {ANNOTATIONS} {sample} > {output}/results.csv
+        metagraph_{molecule} query -i {graph} -a {annotation} --discovery-fraction {minfrac} {QUERY}
     """
 
 rule do_query:

@@ -7,3 +7,5 @@ output_dir: outputs/
 
 # sourmash-specific config params
 ksize: 31
+minimum_kmer_fraction: 0.7
+molecule: 'DNA'
