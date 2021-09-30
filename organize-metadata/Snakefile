@@ -82,7 +82,7 @@ def get_report(tool="gottcha",environment="marine",samplesdir=SAMPLESDIR,simple_
 def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir, environment, tool="gottcha"):
     if tool == "centrifuge":
         centrifuge_file = read_map_file.loc[read_map_file.numReads > reads_cutoff,:]
-        centrifuge_file = centrifuge_file[["name","taxID","taxRank"]].drop_duplicates()
+        centrifuge_file = centrifuge_file[["name","taxRank","taxID"]].drop_duplicates()
 
         tax_labels = list(set(centrifuge_file.taxRank))
         if "phylum" not in tax_labels:
@@ -97,10 +97,11 @@ def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir,
     elif tool == "kraken":
         read_map_file = read_map_file.loc[read_map_file.num_frags > reads_cutoff,:]
         read_map_file = read_map_file[["rank_code","sci_name","ncbi_tax_id"]].drop_duplicates()
+	read_map_file.columns = ["rank_code","name","taxID"]
         kraken_label_dict = dict(zip(["U","R","D","K","P","C","O","F","G","S"],["remove","remove","superphylum","kingdom","phylum","class","order","family","genus","species"]))
 
         read_map_file["taxRank"] = [kraken_label_dict[curr] if curr in kraken_label_dict else "remove" for curr in read_map_file.rank_code]
-
+	read_map_file = read_map_file[["name","taxRank","taxID"]]
         read_map_file = read_map_file.loc[read_map_file.taxRank != "remove",:]
         tax_labels = list(set(read_map_file.taxRank))
         if "phylum" not in tax_labels:
@@ -117,10 +118,11 @@ def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir,
         read_map_file = read_map_file[["NAME","LEVEL","TAXID"]].drop_duplicates()
 	print(read_map_file.columns, flush=True)
         tax_labels = list(set(read_map_file["LEVEL"]))
+	read_map_file.columns = ["name","taxRank","taxID"]
         #if "phylum" not in tax_labels:
 	#    tax_labels.append("phylum")
 	for tax_label in tax_labels:
-            tax_curr = read_map_file.loc[read_map_file["LEVEL"] == tax_label,:].reset_index(drop=True).drop_duplicates()
+            tax_curr = read_map_file.loc[read_map_file["taxRank"] == tax_label,:].reset_index(drop=True).drop_duplicates()
             tax_curr["environment"] = environment
             tax_curr["sampleID"] = metag_simple_id
             tax_curr["mappingTool"] = tool
@@ -146,3 +148,13 @@ rule all_other_rule:
                            "ncbi_tax_id","sci_name"], sep = "\t")
         parse_raw_read_file(reads_file, params.reads_cutoff,
                     params.metag_simple_id, params.outputdir, params.environment, tool=params.tool_name)
+
+rule consolidate_output:
+	input:
+		one_tax_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}_phylum.parsed.tsv")
+	output:
+		all_tax_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "all", "{metag_simple_id}_parsed.tsv")
+	shell:
+		'''
+
+		'''
