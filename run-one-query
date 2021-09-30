@@ -27,7 +27,7 @@ def run_snakemake(target, output_dir, config_d, tool_dir):
     with open(config_filename, 'wt') as fp:
         yaml.dump(config_d, fp)
 
-    cmd = f"snakemake --use-conda -p -j 1 --configfile={config_filename} {target}"
+    cmd = f"snakemake --use-conda -p -j 1 --configfile={config_d} {target}"
     print('running:', (cmd,))
     subprocess.check_call(cmd, shell=True, cwd=tool_dir)
 
@@ -69,11 +69,13 @@ def main():
 
     tool_dir = args.tool
     config_file = os.path.abspath(args.config_file)
+    data_type = os.path.abspath(args.type)
 
     with open(config_file, 'rt') as fp:
         config_d = yaml.safe_load(fp)
 
     config_d['query_file'] = args.query
+    config_d['data_type'] = args.type
 
     config_d['sample_prep_dir'] = os.path.join(output_dir, 'prep.sample')
     config_d['log_dir'] = os.path.join(output_dir, 'logs')
