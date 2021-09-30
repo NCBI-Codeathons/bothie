@@ -71,15 +71,17 @@ def main():
     print('installing software:')
     run_snakemake('install_software', output_dir, config_d, tool_dir)
 
+    results = []
+
     sample_num = 0
     for sample in samples:
         sample_num += 1
         config_d['sample_prep_dir'] = os.path.join(output_dir,
                                                    f'prep.sample.{sample_num}')
         config_d['log_dir'] = os.path.join(output_dir, 'logs')
-        run_snakemake('prepare_sample', output_dir, config_d, tool_dir)
+        config_d['metagenome_files'] = [sample]
 
-        results = []
+        run_snakemake('prepare_sample', output_dir, config_d, tool_dir)
 
         query_num = 0
         for query in samples.get(sample):
