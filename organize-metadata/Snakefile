@@ -23,14 +23,13 @@ KRAKEN_DIR=os.path.join(OUTPUTDIR, 'parsed_kraken')
 RESULTS_DIR=os.path.join(OUTPUTDIR, 'final_results')
 
 READS_CUTOFF=config["read_cutoff"]
-print(metags_simple)
 rule all:
     input:
-        centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}_species.parsed.tsv"),
+        centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
                     zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
-        gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}_species.parsed.tsv"),
+        gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
                 zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
-        kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}_species.parsed.tsv"),
+        kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
                                      zip, environment = ALL_ENVS, metag_simple_id  = metags_simple)
 
 #name    taxID    taxRank    genomeSize    numReads    numUniqueReads    abundance (centrifuge)
@@ -59,7 +58,7 @@ rule centrifuge_rule:
             tax_curr_centrifuge.to_csv(os.path.join(params.centrifuge_dir, params.environment, params.metag_simple_id + "_centrifuge_" + tax_label + ".parsed.tsv"))
 
 #LEVEL    NAME    TAXID    READ_COUNT    TOTAL_BP_MAPPED    TOTAL_BP_MISMATCH    LINEAR_LEN    LINEAR_DOC    ROLLUP_DOC    REL_ABUNDANCE
-#superkingdom    Bacteria    2    37204030    3716854169    48869776    155022750    23.976185    1826.975232    0.993612
+#superphylum    Bacteria    2    37204030    3716854169    48869776    155022750    23.976185    1826.975232    0.993612
 
 #kraken2
 #57.02    29327334    29327334    U    0    unclassified
@@ -86,6 +85,8 @@ def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir,
         centrifuge_file = centrifuge_file[["name","taxID","taxRank"]].drop_duplicates()
 
         tax_labels = list(set(centrifuge_file.taxRank))
+        if "phylum" not in tax_labels:
+            tax_labels.append("phylum")
         for tax_label in tax_labels:
             tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
             tax_curr_centrifuge["environment"] = environment
@@ -95,25 +96,31 @@ def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir,
                 metag_simple_id + "_" + tool + "_" + tax_label + ".parsed.tsv"))
     elif tool == "kraken":
         read_map_file = read_map_file.loc[read_map_file.num_frags > reads_cutoff,:]
-        read_map_file = read_map_file[["name","rank_code","sci_name","ncbi_tax_id"]].drop_duplicates()
-        kraken_label_dict = dict(zip(["U","R","D","K","P","C","O","F","G","S"],["remove","remove","superkingdom","kingdom","phylum","class","order","family","genus","species"]))
+        read_map_file = read_map_file[["rank_code","sci_name","ncbi_tax_id"]].drop_duplicates()
+        kraken_label_dict = dict(zip(["U","R","D","K","P","C","O","F","G","S"],["remove","remove","superphylum","kingdom","phylum","class","order","family","genus","species"]))
 
         read_map_file["taxRank"] = [kraken_label_dict[curr] if curr in kraken_label_dict else "remove" for curr in read_map_file.rank_code]
 
         read_map_file = read_map_file.loc[read_map_file.taxRank != "remove",:]
         tax_labels = list(set(read_map_file.taxRank))
+        if "phylum" not in tax_labels:
+            tax_labels.append("phylum")
+	print(tax_labels,metag_simple_id,tool,flush=True)
         for tax_label in tax_labels:
             tax_curr = read_map_file.loc[read_map_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
             tax_curr["environment"] = environment
             tax_curr["sampleID"] = metag_simple_id
             tax_curr["mappingTool"] = tool
             tax_curr.to_csv(os.path.join(outputdir, tool, environment,metag_simple_id + "_" + tool + "_" + tax_label + ".parsed.tsv"))
-    elif rule == "gottcha":
+    elif tool == "gottcha":
         read_map_file = read_map_file.loc[read_map_file.READ_COUNT > reads_cutoff,:]
         read_map_file = read_map_file[["NAME","LEVEL","TAXID"]].drop_duplicates()
-        tax_labels = list(set(read_map_file.LEVEL))
-        for tax_label in tax_labels:
-            tax_curr = read_map_file.loc[read_map_file.LEVEL == tax_label,:].reset_index(drop=True).drop_duplicates()
+	print(read_map_file.columns, flush=True)
+        tax_labels = list(set(read_map_file["LEVEL"]))
+        #if "phylum" not in tax_labels:
+	#    tax_labels.append("phylum")
+	for tax_label in tax_labels:
+            tax_curr = read_map_file.loc[read_map_file["LEVEL"] == tax_label,:].reset_index(drop=True).drop_duplicates()
             tax_curr["environment"] = environment
             tax_curr["sampleID"] = metag_simple_id
             tax_curr["mappingTool"] = tool
@@ -123,7 +130,7 @@ rule all_other_rule:
     input:
         report_file = lambda filename: get_report(tool=filename.tool_name,environment=filename.environment,samplesdir=SAMPLESDIR,simple_nmdc=filename.metag_simple_id)
     output:
-        centrifuge_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}_species.parsed.tsv")
+        centrifuge_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}_phylum.parsed.tsv")
     params:
         tool_name = "{tool_name}",
         centrifuge_dir = CENTRIFUGE_DIR,
