@@ -93,7 +93,7 @@ def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir,
             tax_curr_centrifuge["sampleID"] = metag_simple_id
             tax_curr_centrifuge["mappingTool"] = tool
             tax_curr_centrifuge.to_csv(os.path.join(outputdir, tool, environment,
-                metag_simple_id + "_" + tool + "_" + tax_label + ".parsed.tsv"))
+                metag_simple_id + "_" + tax_label + ".parsed.tsv"))
     elif tool == "kraken":
         read_map_file = read_map_file.loc[read_map_file.num_frags > reads_cutoff,:]
         read_map_file = read_map_file[["rank_code","sci_name","ncbi_tax_id"]].drop_duplicates()
@@ -105,13 +105,13 @@ def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir,
         tax_labels = list(set(read_map_file.taxRank))
         if "phylum" not in tax_labels:
             tax_labels.append("phylum")
-	print(tax_labels,metag_simple_id,tool,flush=True)
+        print(tax_labels,metag_simple_id,tool,flush=True)
         for tax_label in tax_labels:
             tax_curr = read_map_file.loc[read_map_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
             tax_curr["environment"] = environment
             tax_curr["sampleID"] = metag_simple_id
             tax_curr["mappingTool"] = tool
-            tax_curr.to_csv(os.path.join(outputdir, tool, environment,metag_simple_id + "_" + tool + "_" + tax_label + ".parsed.tsv"))
+            tax_curr.to_csv(os.path.join(outputdir, tool, environment,metag_simple_id + "_" + tax_label + ".parsed.tsv"))
     elif tool == "gottcha":
         read_map_file = read_map_file.loc[read_map_file.READ_COUNT > reads_cutoff,:]
         read_map_file = read_map_file[["NAME","LEVEL","TAXID"]].drop_duplicates()
