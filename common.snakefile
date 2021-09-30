@@ -3,6 +3,8 @@ SAMPLE_PREP = config['sample_prep_dir']
 QUERY_PREP = config.get('query_prep_dir', '')
 RESULTS_DIR = config.get('results_dir', '')
 LOG_DIR = config['log_dir']
+QUERY_TRANSLATE = config['translated_query_dir', '']
+SAMPLE_TRANSLATE = config['translated_sample_dir', '']
 
 ###
 ### check configuration

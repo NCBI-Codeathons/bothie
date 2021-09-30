@@ -28,7 +28,7 @@ def run_snakemake(target, output_dir, config_file, tool_dir):
     #     yaml.dump(config_d, fp)
 
     cmd = f"snakemake --use-conda -p -j 1 --configfile={config_file} {target}"
-    print('running:', (cmd,))
+    print('running:', (cmd))
     subprocess.check_call(cmd, shell=True, cwd=tool_dir)
 
 def run_protein_snakemake(target, output_dir, config_file, tool_dir):
@@ -94,7 +94,7 @@ def main():
     # config_d['query_prep_dir'] = os.path.join(output_dir, 'prep.query')
     # config_d['results_dir'] = os.path.join(output_dir, 'results')
 
-    print('installing software:')
+    # print('installing software:')
 
     # run_snakemake('install_software', output_dir, yaml_file, tool_dir)
 
