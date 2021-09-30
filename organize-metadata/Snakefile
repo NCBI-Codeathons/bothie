@@ -137,6 +137,56 @@ def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir,
             tax_curr["mappingTool"] = tool
             tax_curr.to_csv(os.path.join(outputdir, tool, environment,metag_simple_id + "_" + tax_label + ".parsed.tsv"))
 
+rule combine_all:
+    input:
+        tool_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}_phylum.parsed.tsv")
+    output:
+        tool_all = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}.all.parsed.tsv")
+    params:
+        metag_id = "{metag_simple_id}",
+        dir_in = os.path.join(OUTPUTDIR,"{tool_name}","{environment}")
+    run:
+        all_files = os.listdir(os.path.join(params.dir_in))
+        selected_files = [curr for curr in all_files if params.metag_id in curr]
+        df_to_ret = pd.DataFrame()
+        for select_file in selected_files:
+            current_file = pd.read_csv(selected_files,sep = "\t")
+            df_to_ret = pd.concat([df_to_ret,current_file])
+
+        df_to_ret.to_csv(output.tool_all,sep="\t")
+
+rule get_accessions:
+    input:
+        tool_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}.all.parsed.tsv")
+    output:
+        ids_needed = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}_ids", "{metag_simple_id}.all.ids.txt")
+    params:
+        metag_id = "{metag_simple_id}",
+        dir_in = os.path.join(OUTPUTDIR,"{tool_name}","{environment}")
+    run:
+        all_files = os.listdir(os.path.join(params.dir_in))
+        file_needed = pd.read_csv(input.tool_out,sep="\t")
+        tax_ids = list(file_needed.taxID)
+        textfile = open(output.ids_needed, "w")
+        for element in tax_ids:
+            textfile.write(element + "\n")
+
+rule entrez_names:
+    input:
+        tool_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}.all.parsed.tsv"),
+        ids_needed = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}_ids", "{metag_simple_id}.all.ids.txt")
+    output:
+        tool_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}_accessions", "{metag_simple_id}.all.accessions.txt")
+    conda:
+        "entrez-env.yaml"
+    shell:
+        '''
+        cat {input.ids_needed} | while read line 
+        do
+            accession_curr=$(esearch -db nuccore -query "txid$line[Organism:exp] AND refseq[filter]"|efetch -format acc
+        done
+        '''
+
 rule all_other_rule:
     input:
         report_file = lambda filename: get_report(tool=filename.tool_name,environment=filename.environment,samplesdir=SAMPLESDIR,simple_nmdc=filename.metag_simple_id)
