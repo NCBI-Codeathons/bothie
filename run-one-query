@@ -84,7 +84,7 @@ def main():
 
     print('installing software:')
 
-    run_snakemake('install_software', output_dir, yaml_file, tool_dir)
+    # run_snakemake('install_software', output_dir, yaml_file, tool_dir)
 
     if args.type == protein :
 
