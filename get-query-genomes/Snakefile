@@ -1,0 +1,76 @@
+import csv
+import pandas as pd
+
+# load stuff from config
+SAMPLES=config.get('metagenome_files', [])
+QUERY=config.get('query_file', '')
+
+
+
+
+# grab the taxid: assembly accession info directly from ncbi
+# could do this in a rule, but would need to use a checkpoint :shrug:
+refseq_info = pd.read_csv("ftp://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_refseq.txt", skip_rows=1)
+refseq_info['assembly_accession'] = refseq_info['# assembly_accession']
+taxid_to_accession = refseq_info[['taxid', 'species_taxid', 'assembly_accession']]
+# write out, just to have the record
+taxid2acc_file = f"{OUTPUT_DIR}/get-query-genomes/taxid-to-accession.csv.gz"
+taxid_to_accession.to_csv(taxid2acc_file, index=False)
+
+
+# map input tax ids to genome accessions we can download
+#TAX_IDS = # read taxid file
+ACCESSIONS = taxid_to_accession[taxid_to_accession['taxid'].isin(TAX_IDS)]
+
+# this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
+include: '../common.snakefile'
+
+# download genbank genome details; make an info.csv file for entry.
+rule make_genome_info_csv:
+    output:
+        csvfile = f'{OUTPUT_DIR}/query-genomes/info/{{acc}}.info.csv'
+    #conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/query-genomes/make_genome_info_csv.log"
+    benchmark: f"{OUTPUT_DIR}/logs/query-genomes/make_genome_info_csv.benchmark"
+    shell: """
+        python -Werror genbank_genomes.py {wildcards.acc} \
+            --output {output.csvfile}
+    """
+
+# download actual genomes!
+rule download_matching_genome_wc:
+     input:
+         csvfile = ancient(f'{OUTPUT_DIR}/query_genomes/info/{acc}.info.csv')
+     output:
+         genome = f"{OUTPUT_DIR}/query-genomes/{{acc}}_genomic.fna.gz"
+    log: f"{OUTPUT_DIR}/logs/query-genomes/{{acc}}}.make_genome_info_csv.log"
+    benchmark: f"{OUTPUT_DIR}/logs/query-genomes/{{acc}}.make_genome_info_csv.benchmark"
+     run:
+         with open(input.csvfile, 'rt') as infp:
+             r = csv.DictReader(infp)
+             rows = list(r)
+             assert len(rows) == 1
+             row = rows[0]
+             acc = row['acc']
+             assert wildcards.acc.startswith(acc)
+             url = row['genome_url']
+             name = row['ncbi_tax_name']
+
+             print(f"downloading genome for acc {acc}/{name} from NCBI...",
+                   file=sys.stderr)
+             with open(output.genome, 'wb') as outfp:
+                 with urllib.request.urlopen(url) as response:
+                     content = response.read()
+                     outfp.write(content)
+                     print(f"...wrote {len(content)} bytes to {output.genome}",
+                           file=sys.stderr)
+
+
+rule write_bothie_configfile:
+    input:  expand(f"{OUTPUT_DIR}/query-genomes/{{acc}}_genomic.fna.gz", acc=ACCESSIONS)
+    output: f"{OUTPUT_DIR}/_____/{METAGENOME}.config"
+    log: f"{OUTPUT_DIR}/logs/_______/{METAGENOME}.write_bothie_config.log"
+    benchmark: f"{OUTPUT_DIR}/logs/_______/{METAGENOME}.write_bothie_config.benchmark"
+    run:
+
+
