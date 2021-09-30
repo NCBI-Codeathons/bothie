@@ -9,7 +9,7 @@ except ValueError:
     print(f"Invalid ksize {repr(ksize)}", file=sys.stderr)
     raise
 
-# this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
+# this sets LOG_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
 include: '../common.snakefile'
 
 ###
@@ -19,8 +19,8 @@ include: '../common.snakefile'
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/sourmash4.yml"
-    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.benchmark"
+    log: f"{LOG_DIR}/prepare_sample.log"
+    benchmark: f"{LOG_DIR}/prepare_sample.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
@@ -32,8 +32,8 @@ rule prepare_query:
     conda: "../conf/env/sourmash4.yml"
     params:
         name = os.path.basename(QUERY)
-    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.benchmark"
+    log: f"{LOG_DIR}/prepare_query.log"
+    benchmark: f"{LOG_DIR}/prepare_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
@@ -47,8 +47,8 @@ rule execute_query_command:
         sample = f"{SAMPLE_PREP}/sample.sig",
     output: directory(RESULTS_DIR)
     conda: "../conf/env/sourmash4.yml"
-    log: f"{OUTPUT_DIR}/logs/sourmash/execute_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/execute_query.benchmark"
+    log: f"{LOG_DIR}/execute_query.log"
+    benchmark: f"{LOG_DIR}/execute_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
@@ -58,7 +58,7 @@ rule execute_query_command:
 rule do_query:
     message: "Run query and evaluate if it found it, or not."
     input: dir=RESULTS_DIR
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/do_query.benchmark"
+    benchmark: f"{LOG_DIR}/do_query.benchmark"
     run:
         with open(input.dir + '/results.csv', "rt") as fp:
             lines = fp.readlines()
@@ -75,8 +75,8 @@ rule do_query:
 
 rule install_software:
     conda: "../conf/env/sourmash4.yml"
-    log: f"{OUTPUT_DIR}/logs/sourmash/install_software.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/install_software.benchmark"
+    log: f"{LOG_DIR}/install_software.log"
+    benchmark: f"{LOG_DIR}/install_software.benchmark"
     shell: """
        sourmash --version 2> {log}
     """
