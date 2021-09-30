@@ -1,7 +1,6 @@
 # one or more files that will be combined into a single sample database
 metagenome_files:
 - ../data/reference/SLE_2018_wet.fq.gz
-query_file:
-- ../data/query/microcystin_BGC.fna
+query_file: ../data/query/microcystin_BGC.fna
 # sourmash-specific config params
 ksize: 31
