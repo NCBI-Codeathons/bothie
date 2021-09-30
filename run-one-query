@@ -104,22 +104,22 @@ def main():
 
     else:
 
-    print(datetime.datetime.now(), 'START SAMPLE PREP')
-    run_snakemake('prepare_sample', output_dir, config_d,
-                  tool_dir)
-    print(datetime.datetime.now(), 'END SAMPLE PREP')
+        print(datetime.datetime.now(), 'START SAMPLE PREP')
+        run_snakemake('prepare_sample', output_dir, config_d,
+                      tool_dir)
+        print(datetime.datetime.now(), 'END SAMPLE PREP')
 
-    print(datetime.datetime.now(), 'START QUERY PREP')
-    run_snakemake('prepare_query', output_dir, config_d,
-                  tool_dir)
-    print(datetime.datetime.now(), 'END QUERY PREP')
+        print(datetime.datetime.now(), 'START QUERY PREP')
+        run_snakemake('prepare_query', output_dir, config_d,
+                      tool_dir)
+        print(datetime.datetime.now(), 'END QUERY PREP')
 
-    print(datetime.datetime.now(), 'START DO QUERY')
-    run_snakemake('do_query', output_dir, config_d, tool_dir)
-    print(datetime.datetime.now(), 'END DO QUERY')
+        print(datetime.datetime.now(), 'START DO QUERY')
+        run_snakemake('do_query', output_dir, config_d, tool_dir)
+        print(datetime.datetime.now(), 'END DO QUERY')
 
-    print('')
-    print('results in', args.output_dir)
+        print('')
+        print('results in', args.output_dir)
 
 if __name__ == '__main__':
     main()
