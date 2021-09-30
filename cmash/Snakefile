@@ -72,5 +72,7 @@ rule install_software:
     log: f"{LOG_DIR}/install_software.log"
     benchmark: f"{LOG_DIR}/install_software.benchmark"
     shell: """
+    MakeDNADatabase.py -h
 	MakeNodeGraph.py -h
+    QueryDNADatabase.py -h
     """
