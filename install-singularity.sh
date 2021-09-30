@@ -1,4 +1,4 @@
-#! /usr/env/bin bash
+#! /usr/bin/env bash
 
 # this bash script installs singularity assuming we are on a ubuntu/debian based OS
 
