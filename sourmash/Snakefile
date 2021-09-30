@@ -15,7 +15,7 @@ include: '../common.snakefile'
 ###
 ### actual rules to run something
 ###
-
+### sketching dna
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/sourmash4.yml"
@@ -40,6 +40,60 @@ rule prepare_query:
        sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig \
           --merge {params.name}  2> {log}
     """
+### sketching proteins
+rule translate_sample:
+    output: directory(SAMPLE_TRANSLATE)
+    conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/translate_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/translate_sample.benchmark"
+    shell: """
+       rm -fr {output}
+       mkdir -p {output}
+       sourmash sketch translate {SAMPLES} -o {output} 2> {log}
+    """
+
+rule translate_query:
+    output: directory(QUERY_TRANSLATE)
+    conda: "../conf/env/sourmash4.yml"
+    params:
+        name = os.path.basename(QUERY)
+    log: f"{OUTPUT_DIR}/logs/sourmash/translate_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/traslate_query.benchmark"
+    shell: """
+       rm -fr {output}
+       mkdir -p {output}
+       sourmash sketch translate {QUERY} -o {output} 2> {log}
+    """
+rule prepare_protein_sample:
+    input:
+        protein_sample = f"{SAMPLE_TRANSLATE/*.faa}
+    output: directory(SAMPLE_PREP)
+    conda: "../conf/env/sourmash4.yml"
+    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_protein_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_protein_sample.benchmark"
+    shell: """
+       rm -fr {output}
+       mkdir -p {output}
+       sourmash sketch protein -p k={ksize} {input.protein_sample} -o {output}/sample.sig 2> {log}
+    """
+
+rule prepare_protein_query:
+    input:
+        protein_query = f"{QUERY_TRANSLATE/*.faa}
+    output: directory(QUERY_PREP)
+    conda: "../conf/env/sourmash4.yml"
+    params:
+        name = os.path.basename(QUERY)
+    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_protein_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_protein_query.benchmark"
+    shell: """
+       rm -fr {output}
+       mkdir -p {output}
+       sourmash sketch protein -p k={ksize} {input.protein_query} -o {output}/query.sig \
+          --merge {params.name}  2> {log}
+    """
+
+### query reference
 
 rule execute_query_command:
     input:

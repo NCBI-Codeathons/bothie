@@ -22,12 +22,17 @@ def run_snakemake(target, extra_args, tool_dir):
     print('running:', (cmd,))
     subprocess.check_call(cmd, shell=True, cwd=tool_dir)
 
+def run_protein_snakemake(target, extra_args, tool_dir):
+    cmd = f"snakemake -p -j 1 {target} {' '.join(extra_args)}"
+    print('running:', (cmd,))
+    subprocess.check_call(cmd, shell=True, cwd=tool_dir)
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('config_file', help='config file, YAML or JSON')
     p.add_argument('tool', help='tool directory, e.g. sourmash')
     p.add_argument('query', help='query sequence(s)')
+    p.add_argument('type', help='protein or DNA')
     p.add_argument('--no-clean-query', help="do not reset query prep; reuse query prep", action="store_true")
     p.add_argument('--output-dir')
     args = p.parse_args()
@@ -66,14 +71,34 @@ def main():
     print('installing software:')
 
     run_snakemake('install_software', snakemake_args, tool_dir)
-                      
-    print(datetime.datetime.now(), 'START SAMPLE PREP')
-    run_snakemake('prepare_sample', snakemake_args, tool_dir)
-    print(datetime.datetime.now(), 'END SAMPLE PREP')
 
-    print(datetime.datetime.now(), 'START QUERY PREP')
-    run_snakemake('prepare_query', snakemake_args, tool_dir)
-    print(datetime.datetime.now(), 'END QUERY PREP')
+    if args.type == protein :
+
+        print(datetime.datetime.now(), 'START SAMPLE PREP')
+        run_protein_snakemake('translate_query', snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END SAMPLE PREP')
+
+        print(datetime.datetime.now(), 'START SAMPLE PREP')
+        run_protein_snakemake('translate_sample', snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END SAMPLE PREP')
+
+        print(datetime.datetime.now(), 'START SAMPLE PREP')
+        run_protein_snakemake('prepare_protein_sample', snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END SAMPLE PREP')
+
+        print(datetime.datetime.now(), 'START QUERY PREP')
+        run_protein_snakemake('prepare_protein_query', snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END QUERY PREP')
+
+    else:
+
+        print(datetime.datetime.now(), 'START SAMPLE PREP')
+        run_snakemake('prepare_sample', snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END SAMPLE PREP')
+
+        print(datetime.datetime.now(), 'START QUERY PREP')
+        run_snakemake('prepare_query', snakemake_args, tool_dir)
+        print(datetime.datetime.now(), 'END QUERY PREP')
 
     print(datetime.datetime.now(), 'START DO QUERY')
     run_snakemake('do_query', snakemake_args, tool_dir)
