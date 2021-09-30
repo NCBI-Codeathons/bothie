@@ -57,7 +57,7 @@ rule execute_query_command:
         rm -fr {output}
         mkdir -p {output}
 
-        metagraph_{molecule} query -i {graph} -a {annotation} --discovery-fraction {minfrac} {QUERY}
+        metagraph_{molecule} query -i {SAMPLE_PREP}/graph.dbg -a {SAMPLE_PREP}/graph.column.annodbg --discovery-fraction {minfrac} {QUERY}
     """
 
 rule do_query:
