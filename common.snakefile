@@ -1,8 +1,8 @@
 # don't change these :)
-OUTPUT_DIR=config.get('output_dir', 'outputs')
-SAMPLE_PREP=os.path.join(OUTPUT_DIR, 'prep.sample')
-QUERY_PREP=os.path.join(OUTPUT_DIR, 'prep.query')
-RESULTS_DIR=os.path.join(OUTPUT_DIR, 'results')
+SAMPLE_PREP = config['sample_prep_dir']
+QUERY_PREP = config['query_prep_dir']
+RESULTS_DIR = config['results_dir']
+LOG_DIR = config['log_dir']
 
 ###
 ### check configuration
@@ -33,14 +33,9 @@ for sample in SAMPLES:
 #    print(f"query file '{QUERY}' does not exist.", file=sys.stderr)
 #    do_fail = True
 
-if not OUTPUT_DIR.startswith('/'):
-    print(f"output directory '{OUTPUT_DIR}' is not an absolute path.")
-    do_fail = True
-
 if do_fail:
     print('Snakefile config checks FAILED.', file=sys.stderr)
     sys.exit(-1)
 
 print("Configuration PASSED!", file=sys.stderr)
-print('output directory:', OUTPUT_DIR, file=sys.stderr)
 
