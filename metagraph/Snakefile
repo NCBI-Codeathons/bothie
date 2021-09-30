@@ -57,7 +57,7 @@ rule execute_query_command:
         rm -fr {output}
         mkdir -p {output}
 
-        metagraph_{molecule} query -i {SAMPLE_PREP}/graph.dbg -a {SAMPLE_PREP}/graph.column.annodbg --discovery-fraction {minfrac} {QUERY} > {output}/results.csv  2> {log}
+        metagraph_{molecule} query -i {input.graph} -a {input.colors} --discovery-fraction {minfrac} {QUERY} > {output}/results.csv  2> {log}
     """
 
 rule do_query:
@@ -67,7 +67,7 @@ rule do_query:
         with open(input.dir + '/results.csv', "rt") as fp:
             lines = fp.readlines()
 
-            # victory condition for sourmash - two lines in file :)
+            # victory condition for metagraph - one line in file :)
             found = False
             if len(lines) == 1:
                 found = True
