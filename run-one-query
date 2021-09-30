@@ -69,7 +69,7 @@ def main():
                       f"--configfile {config_file}",
                       # f"-C query_file={args.query} output_dir={args.output_dir}"]
                       f"-C output_dir={args.output_dir}",
-                      f"-C data_type={args.type}]
+                      f"-C data_type={args.type}"]
     print('installing software:')
 
     run_snakemake('install_software', snakemake_args, tool_dir)
