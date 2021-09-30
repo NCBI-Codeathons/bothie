@@ -1,7 +1,7 @@
 # don't change these :)
 SAMPLE_PREP = config['sample_prep_dir']
-QUERY_PREP = config['query_prep_dir']
-RESULTS_DIR = config['results_dir']
+QUERY_PREP = config.get('query_prep_dir', '')
+RESULTS_DIR = config.get('results_dir', '')
 LOG_DIR = config['log_dir']
 
 ###
