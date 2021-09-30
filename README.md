@@ -77,7 +77,7 @@ or
 + Tessa Pierce Ward: ntpierce@gmail.com
 + Olaitan Awe: laitanawe@gmail.com
 + Arianna krinos: akrinos@whoi.edu
-+ Minghand Lee: matchy@snu.ac.kr
++ Minghang Lee: matchy@snu.ac.kr
 + René KM Xavier: rmillerxavie2017@fau.edu
 + Rodrigo Polo: ropolo@gmail.com
 + Adelaide Rhodes: adelaide.rhodes@nih.gov
