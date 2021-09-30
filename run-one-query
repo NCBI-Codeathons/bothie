@@ -101,19 +101,19 @@ def main():
     if args.type == str("protein") :
 
         print(datetime.datetime.now(), 'START SAMPLE PREP')
-        run_protein_snakemake('translate_query', snakemake_args, tool_dir)
+        run_protein_snakemake('translate_query', output_dir, yaml_file, tool_dir)
         print(datetime.datetime.now(), 'END SAMPLE PREP')
 
         print(datetime.datetime.now(), 'START SAMPLE PREP')
-        run_protein_snakemake('translate_sample', snakemake_args, tool_dir)
+        run_protein_snakemake('translate_sample', output_dir, yaml_file, tool_dir)
         print(datetime.datetime.now(), 'END SAMPLE PREP')
 
         print(datetime.datetime.now(), 'START SAMPLE PREP')
-        run_protein_snakemake('prepare_protein_sample', snakemake_args, tool_dir)
+        run_protein_snakemake('prepare_protein_sample', output_dir, yaml_file, tool_dir)
         print(datetime.datetime.now(), 'END SAMPLE PREP')
 
         print(datetime.datetime.now(), 'START QUERY PREP')
-        run_protein_snakemake('prepare_protein_query', snakemake_args, tool_dir)
+        run_protein_snakemake('prepare_protein_query', output_dir, yaml_file, tool_dir)
         print(datetime.datetime.now(), 'END QUERY PREP')
 
     else:
