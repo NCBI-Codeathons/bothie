@@ -1,0 +1,173 @@
+configfile: "config.yaml"
+
+import sys, os
+import pandas as pd
+
+SAMPLESDIR=config['samples']
+ENVIRONMENTS=os.listdir(SAMPLESDIR)
+METAGENOME_IDS=dict(zip(ENVIRONMENTS,[os.listdir(os.path.join(SAMPLESDIR,env_curr)) for env_curr in ENVIRONMENTS]))
+LIST_OF_METAG_IDS=list(METAGENOME_IDS.values())
+
+ALL_METAGS = []
+[ALL_METAGS.extend(curr_list) for curr_list in LIST_OF_METAG_IDS]
+metags_simple = [curr.split(":")[-1] for curr in ALL_METAGS]
+
+ALL_ENVS = []
+[ALL_ENVS.extend([ENVIRONMENTS[curr_ind]] * len(LIST_OF_METAG_IDS[curr_ind])) for curr_ind in range(len(ENVIRONMENTS))]
+ENV_CORR = {"gut":"nmdc", "marine":"nmdc", "soil":""}
+
+OUTPUTDIR=config['output']
+CENTRIFUGE_DIR=os.path.join(OUTPUTDIR, 'parsed_centrifuge')
+KRAKEN_DIR=os.path.join(OUTPUTDIR, 'parsed_kraken')
+
+RESULTS_DIR=os.path.join(OUTPUTDIR, 'final_results')
+
+print( ["kraken"] * len(ALL_ENVS) + ["centrifuge"] * len(ALL_ENVS) +
+                                                ["gottcha"] * len(ALL_ENVS), flush = True)
+READS_CUTOFF=config["read_cutoff"]
+rule all:
+    input:
+        centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
+                    zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
+        gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
+                zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
+        kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
+                                     zip, environment = ALL_ENVS, metag_simple_id  = metags_simple)
+#	all_out_kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}", "parsed.tsv"),
+#			 zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
+#	all_out_centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}", "parsed.tsv"),
+#                         zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
+#	all_out_gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}", "parsed.tsv"),
+#                         zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
+#	all_out_envs = os.path.join(OUTPUTDIR, "all_parsed.tsv")
+
+#name    taxID    taxRank    genomeSize    numReads    numUniqueReads    abundance (centrifuge)
+rule centrifuge_rule:
+    input:
+        centrifuge_report = os.path.join(SAMPLESDIR, "{environment}", "nmdc:{metag_simple_id}",
+                         "ReadbasedAnalysis", "nmdc_{metag_simple_id}" + "_centrifuge_report.tsv")
+    output:
+        centrifuge_out = os.path.join(CENTRIFUGE_DIR, "{environment}", "{metag_simple_id}_centrifuge_species.parsed.tsv")
+    params:
+        centrifuge_dir = CENTRIFUGE_DIR,
+        reads_cutoff = READS_CUTOFF,
+        environment = "{environment}",
+        metag_simple_id = "{metag_simple_id}"
+    run:
+        centrifuge_file = pd.read_csv(input.centrifuge_report, sep = "\t")
+        centrifuge_file = centrifuge_file.loc[centrifuge_file.numReads > params.reads_cutoff,:]
+        centrifuge_file = centrifuge_file[["name","taxID","taxRank"]].drop_duplicates()
+        
+        tax_labels = list(set(centrifuge_file.taxRank))
+        for tax_label in tax_labels:
+            tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
+            tax_curr_centrifuge["environment"] = params.environment
+            tax_curr_centrifuge["sampleID"] = params.metag_simple_id
+            tax_curr_centrifuge["mappingTool"] = "centrifuge"
+            tax_curr_centrifuge.to_csv(os.path.join(params.centrifuge_dir, params.environment, params.metag_simple_id + "_centrifuge_" + tax_label + ".parsed.tsv"))
+
+#LEVEL    NAME    TAXID    READ_COUNT    TOTAL_BP_MAPPED    TOTAL_BP_MISMATCH    LINEAR_LEN    LINEAR_DOC    ROLLUP_DOC    REL_ABUNDANCE
+#superphylum    Bacteria    2    37204030    3716854169    48869776    155022750    23.976185    1826.975232    0.993612
+
+#kraken2
+#57.02    29327334    29327334    U    0    unclassified
+
+def get_report(tool="gottcha",environment="marine",samplesdir=SAMPLESDIR,simple_nmdc=""):
+    if environment == "soil":
+        if tool == "gottcha":
+            return os.path.join(samplesdir,environment,simple_nmdc,"ReadbasedAnalysis","gottcha2",simple_nmdc + ".summary.tsv")
+        elif tool == "centrifuge":
+            return os.path.join(samplesdir,environment,simple_nmdc,"ReadbasedAnalysis","centrifuge",simple_nmdc + ".report.tsv")
+        elif tool == "kraken":
+            return os.path.join(samplesdir,environment,simple_nmdc,"ReadbasedAnalysis","kraken2",simple_nmdc + ".report.tsv")
+    else:
+        if tool == "gottcha":
+            return os.path.join(samplesdir,environment,"nmdc:" + simple_nmdc,"ReadbasedAnalysis","nmdc_" + simple_nmdc + "_gottcha2_report.tsv")
+        elif tool == "centrifuge":
+            return os.path.join(samplesdir,environment,"nmdc:" + simple_nmdc,"ReadbasedAnalysis","nmdc_" + simple_nmdc + "_centrifuge_report.tsv")
+        elif tool == "kraken":
+            return os.path.join(samplesdir,environment,"nmdc:" + simple_nmdc,"ReadbasedAnalysis","nmdc_" + simple_nmdc + "_kraken2_report.tsv")
+
+def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir, environment, tool="gottcha"):
+    if tool == "centrifuge":
+        centrifuge_file = read_map_file.loc[read_map_file.numReads > reads_cutoff,:]
+        centrifuge_file = centrifuge_file[["name","taxRank","taxID"]].drop_duplicates()
+
+        tax_labels = list(set(centrifuge_file.taxRank))
+        if "phylum" not in tax_labels:
+            tax_labels.append("phylum")
+        for tax_label in tax_labels:
+            tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
+            tax_curr_centrifuge["environment"] = environment
+            tax_curr_centrifuge["sampleID"] = metag_simple_id
+            tax_curr_centrifuge["mappingTool"] = tool
+            tax_curr_centrifuge.to_csv(os.path.join(outputdir, tool, environment,
+                metag_simple_id + "_" + tax_label + ".parsed.tsv"))
+    elif tool == "kraken":
+        read_map_file = read_map_file.loc[read_map_file.num_frags > reads_cutoff,:]
+        read_map_file = read_map_file[["rank_code","sci_name","ncbi_tax_id"]].drop_duplicates()
+	read_map_file.columns = ["rank_code","name","taxID"]
+        kraken_label_dict = dict(zip(["U","R","D","K","P","C","O","F","G","S"],["remove","remove","superphylum","kingdom","phylum","class","order","family","genus","species"]))
+
+        read_map_file["taxRank"] = [kraken_label_dict[curr] if curr in kraken_label_dict else "remove" for curr in read_map_file.rank_code]
+	read_map_file = read_map_file[["name","taxRank","taxID"]]
+        read_map_file = read_map_file.loc[read_map_file.taxRank != "remove",:]
+        tax_labels = list(set(read_map_file.taxRank))
+        if "phylum" not in tax_labels:
+            tax_labels.append("phylum")
+        print(tax_labels,metag_simple_id,tool,flush=True)
+        for tax_label in tax_labels:
+            tax_curr = read_map_file.loc[read_map_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
+            tax_curr["environment"] = environment
+            tax_curr["sampleID"] = metag_simple_id
+            tax_curr["mappingTool"] = tool
+            tax_curr.to_csv(os.path.join(outputdir, tool, environment,metag_simple_id + "_" + tax_label + ".parsed.tsv"))
+    elif tool == "gottcha":
+        read_map_file = read_map_file.loc[read_map_file.READ_COUNT > reads_cutoff,:]
+        read_map_file = read_map_file[["NAME","LEVEL","TAXID"]].drop_duplicates()
+	print(read_map_file.columns, flush=True)
+        tax_labels = list(set(read_map_file["LEVEL"]))
+	read_map_file.columns = ["name","taxRank","taxID"]
+        #if "phylum" not in tax_labels:
+	#    tax_labels.append("phylum")
+	for tax_label in tax_labels:
+            tax_curr = read_map_file.loc[read_map_file["taxRank"] == tax_label,:].reset_index(drop=True).drop_duplicates()
+            tax_curr["environment"] = environment
+            tax_curr["sampleID"] = metag_simple_id
+            tax_curr["mappingTool"] = tool
+            tax_curr.to_csv(os.path.join(outputdir, tool, environment,metag_simple_id + "_" + tax_label + ".parsed.tsv"))
+
+rule all_other_rule:
+    input:
+        report_file = lambda filename: get_report(tool=filename.tool_name,environment=filename.environment,samplesdir=SAMPLESDIR,simple_nmdc=filename.metag_simple_id)
+    output:
+        centrifuge_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}_phylum.parsed.tsv")
+    params:
+        tool_name = "{tool_name}",
+        centrifuge_dir = CENTRIFUGE_DIR,
+        reads_cutoff = READS_CUTOFF,
+        environment = "{environment}",
+        metag_simple_id = "{metag_simple_id}",
+        outputdir = OUTPUTDIR
+    run:
+        reads_file = pd.read_csv(input.report_file, sep = "\t")
+        if params.tool_name == "kraken":
+            reads_file = pd.read_csv(input.report_file, header=None,
+                    names=["perc_frags","num_frags","direct_num_frags","rank_code",
+                           "ncbi_tax_id","sci_name"], sep = "\t")
+        parse_raw_read_file(reads_file, params.reads_cutoff,
+                    params.metag_simple_id, params.outputdir, params.environment, tool=params.tool_name)
+
+
+#rule consolidate_all:
+#    input:
+#        all_reports = expand(os.path.join(OUTPUTDIR, "{tool_name}", "{environment}",
+#                   "{metag_simple_id}_phylum.parsed.tsv"),
+#                   tool_name = ["kraken"] * len(ALL_ENVS) + ["centrifuge"] * len(ALL_ENVS) +
+#                               ["gottcha"] * len(ALL_ENVS), environment = ALL_ENVS, metag_simple_id = metags_simple)
+#    output:
+#        all_out_envs = os.path.join(OUTPUTDIR, "all_parsed.tsv")
+#    shell:
+#        '''
+#        cat {input.all_reports} > {output.all_out_envs}
+#        '''
