@@ -19,7 +19,7 @@ if not SAMPLES:
     print("No files in 'metagenome_files' in the config?", file=sys.stderr)
     do_fail = True
 
-print('QUERY is:', (QUERY,), file=sys.stderr)
+# print('QUERY is:', (QUERY,), file=sys.stderr)
 #if not QUERY:
 #    print("No 'query' in the config?", file=sys.stderr)
 #    do_fail = True
@@ -43,4 +43,3 @@ if do_fail:
 
 print("Configuration PASSED!", file=sys.stderr)
 print('output directory:', OUTPUT_DIR, file=sys.stderr)
-
