@@ -22,6 +22,8 @@ KRAKEN_DIR=os.path.join(OUTPUTDIR, 'parsed_kraken')
 
 RESULTS_DIR=os.path.join(OUTPUTDIR, 'final_results')
 
+print( ["kraken"] * len(ALL_ENVS) + ["centrifuge"] * len(ALL_ENVS) +
+                                                ["gottcha"] * len(ALL_ENVS), flush = True)
 READS_CUTOFF=config["read_cutoff"]
 rule all:
     input:
@@ -31,6 +33,13 @@ rule all:
                 zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
         kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
                                      zip, environment = ALL_ENVS, metag_simple_id  = metags_simple)
+#	all_out_kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}", "parsed.tsv"),
+#			 zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
+#	all_out_centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}", "parsed.tsv"),
+#                         zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
+#	all_out_gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}", "parsed.tsv"),
+#                         zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
+#	all_out_envs = os.path.join(OUTPUTDIR, "all_parsed.tsv")
 
 #name    taxID    taxRank    genomeSize    numReads    numUniqueReads    abundance (centrifuge)
 rule centrifuge_rule:
@@ -149,12 +158,16 @@ rule all_other_rule:
         parse_raw_read_file(reads_file, params.reads_cutoff,
                     params.metag_simple_id, params.outputdir, params.environment, tool=params.tool_name)
 
-rule consolidate_output:
-	input:
-		one_tax_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}_phylum.parsed.tsv")
-	output:
-		all_tax_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "all", "{metag_simple_id}_parsed.tsv")
-	shell:
-		'''
 
-		'''
+#rule consolidate_all:
+#    input:
+#        all_reports = expand(os.path.join(OUTPUTDIR, "{tool_name}", "{environment}",
+#                   "{metag_simple_id}_phylum.parsed.tsv"),
+#                   tool_name = ["kraken"] * len(ALL_ENVS) + ["centrifuge"] * len(ALL_ENVS) +
+#                               ["gottcha"] * len(ALL_ENVS), environment = ALL_ENVS, metag_simple_id = metags_simple)
+#    output:
+#        all_out_envs = os.path.join(OUTPUTDIR, "all_parsed.tsv")
+#    shell:
+#        '''
+#        cat {input.all_reports} > {output.all_out_envs}
+#        '''
