@@ -36,10 +36,14 @@ def main():
     p.add_argument('config_file', help='config file, YAML or JSON')
     p.add_argument('tool', help='tool directory, e.g. sourmash')
     p.add_argument('csvfile', help='CSV file containing queries x samples')
+    p.add_argument('-o', '--output', required=True, default=None,
+                   help="output CSV file containing results")
+
     args = p.parse_args()
 
     samples = defaultdict(list)
 
+    num_rows =0
     with open(args.csvfile, newline="") as fp:
         r = csv.DictReader(fp)
 
@@ -53,8 +57,9 @@ def main():
             x = samples[sample]
             x.append(query)
 
-    import pprint
-    pprint.pprint(samples)
+            num_rows += 1
+
+    print(f'loaded {len(samples)} from {num_rows} total.')
 
     d = tempfile.mkdtemp(prefix=f'outputs.{args.tool}.', dir='.')
     output_dir = os.path.abspath(d)
@@ -113,8 +118,16 @@ def main():
                     print('FAILURE! It was not found! ;(', query)
                 results.append((sample, query, result, results_dir))
 
-    import pprint
-    pprint.pprint(results)
+    with open(args.output, 'w', newline='') as fp:
+        w = csv.writer(fp)
+        w.writerow(['sample', 'query', 'result', 'results_dir'])
+
+        for sample, query, result, results_dir in results:
+            sample = os.path.relpath(sample)
+            query = os.path.relpath(query)
+            results_dir = os.path.relpath(results_dir)
+            result = '1' if result else '0'
+            w.writerow([sample, query, result, results_dir])
 
 
 if __name__ == '__main__':
