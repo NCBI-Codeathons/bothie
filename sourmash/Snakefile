@@ -81,7 +81,7 @@ rule translate_query:
     """
 rule prepare_protein_sample:
     input:
-        protein_sample = f"{SAMPLE_TRANSLATE/*.faa}
+        protein_sample = f"{SAMPLE_TRANSLATE/*.faa}"
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/sourmash4.yml"
     log: f"{OUTPUT_DIR}/logs/sourmash/prepare_protein_sample.log"
@@ -94,7 +94,7 @@ rule prepare_protein_sample:
 
 rule prepare_protein_query:
     input:
-        protein_query = f"{QUERY_TRANSLATE/*.faa}
+        protein_query = f"{QUERY_TRANSLATE/*.faa}"
     output: directory(QUERY_PREP)
     conda: "../conf/env/sourmash4.yml"
     params:
