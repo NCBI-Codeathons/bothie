@@ -1,0 +1,9 @@
+sample,query
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.100
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.500
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.1000
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.2000
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.3000
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.4000
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.5000
+genome-s10+s11.fa.gz,data/genome-s10.fa.gz.10000
