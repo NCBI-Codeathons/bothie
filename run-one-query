@@ -71,16 +71,16 @@ def main():
     yaml_file = os.path.abspath(args.config_file)
     data_type = os.path.abspath(args.type)
 
-    with open(config_file, 'rt') as fp:
-        config_d = yaml.safe_load(fp)
-
-    config_d['query_file'] = args.query
-    config_d['data_type'] = args.type
-
-    config_d['sample_prep_dir'] = os.path.join(output_dir, 'prep.sample')
-    config_d['log_dir'] = os.path.join(output_dir, 'logs')
-    config_d['query_prep_dir'] = os.path.join(output_dir, 'prep.query')
-    config_d['results_dir'] = os.path.join(output_dir, 'results')
+    # with open(config_file, 'rt') as fp:
+    #     config_d = yaml.safe_load(fp)
+    #
+    # config_d['query_file'] = args.query
+    # config_d['data_type'] = args.type
+    #
+    # config_d['sample_prep_dir'] = os.path.join(output_dir, 'prep.sample')
+    # config_d['log_dir'] = os.path.join(output_dir, 'logs')
+    # config_d['query_prep_dir'] = os.path.join(output_dir, 'prep.query')
+    # config_d['results_dir'] = os.path.join(output_dir, 'results')
 
     print('installing software:')
 
