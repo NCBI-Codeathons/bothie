@@ -2,6 +2,6 @@
 metagenome_files:
 - ../data/reference/SLE_2018_wet.fq.gz
 query_file:
-- ../data/query/Microcystis_aeruginosa_PCC_7806_microcystin_BGC_GenBank_AF183408v1.fna
+- ../data/query/microcystin_BGC.fna
 # sourmash-specific config params
 ksize: 31
