@@ -31,14 +31,14 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('config_file', help='config file, YAML or JSON')
     p.add_argument('tool', help='tool directory, e.g. sourmash')
-    p.add_argument('query', help='query sequence(s)')
+    #p.add_argument('query', help='query sequence(s)')
     p.add_argument('type', help='protein or DNA')
     p.add_argument('--no-clean-query', help="do not reset query prep; reuse query prep", action="store_true")
     p.add_argument('--output-dir')
     args = p.parse_args()
 
     # fix paths so that they are relative to cwd
-    args.query = os.path.abspath(args.query)
+#    args.query = os.path.abspath(args.query)
     if not os.path.isfile(args.query):
         print(f'ERROR: specified query ({args.query}) is not a file! Is the path correct?')
         sys.exit(-1)
@@ -66,8 +66,8 @@ def main():
     # note: -C / config overrides need to go at end of list
     snakemake_args = ["--use-conda",
                       f"--configfile {config_file}",
-                      f"-C query_file={args.query} output_dir={args.output_dir}"]
-
+                      # f"-C query_file={args.query} output_dir={args.output_dir}"]
+                      f"-C output_dir={args.output_dir}"]
     print('installing software:')
 
     run_snakemake('install_software', snakemake_args, tool_dir)
