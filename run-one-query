@@ -39,9 +39,9 @@ def main():
 
     # fix paths so that they are relative to cwd
 #    args.query = os.path.abspath(args.query)
-    if not os.path.isfile(args.query):
-        print(f'ERROR: specified query ({args.query}) is not a file! Is the path correct?')
-        sys.exit(-1)
+    # if not os.path.isfile(args.query):
+    #     print(f'ERROR: specified query ({args.query}) is not a file! Is the path correct?')
+    #     sys.exit(-1)
     if args.output_dir:
         args.output_dir = os.path.abspath(args.output_dir)
     else:
