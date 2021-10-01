@@ -11,3 +11,10 @@ sudo apt-get install awscli
 
 ## Running
 
+Run:
+```
+./download.sh
+```
+
+(You may want to comment/uncomment some things in the `download.sh`
+shell script.)
