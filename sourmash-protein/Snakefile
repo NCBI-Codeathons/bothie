@@ -24,8 +24,7 @@ rule prepare_sample:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch translate {SAMPLES} -o {output}/sample.faa
-       sourmash sketch protein -p k={ksize} {output}/sample.faa -o {output}/sample.sig 2> {log}
+       sourmash sketch translate {SAMPLES} -o {output}/sample.sig 2> {log}
     """
 
 rule prepare_query:
@@ -38,9 +37,7 @@ rule prepare_query:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch translate {QUERY} -o {output}/query.faa
-       sourmash sketch protein -p k={ksize} {output}/query.faa -o {output}/query.sig \
-          --merge {params.name}  2> {log}
+       sourmash sketch translate {QUERY} -o {output}/query.sig 2> {log}
     """
 
 rule execute_query_command:
