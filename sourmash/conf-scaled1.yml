@@ -1,0 +1,7 @@
+# one or more files that will be combined into a single sample database
+metagenome_files:
+- ../data/genome-s10+s11.fa.gz
+
+# sourmash-specific config params
+ksize: 31
+scaled: 1
