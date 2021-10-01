@@ -2,11 +2,18 @@
 SAMPLES=config.get('metagenome_files', [])
 QUERY=config.get('query_file', '')
 ksize = config.get('ksize', 'unset')
+scaled = config.get('scaled', 'unset')
 
 try:
     ksize = int(ksize)
 except ValueError:
     print(f"Invalid ksize {repr(ksize)}", file=sys.stderr)
+    raise
+
+try:
+    scaled = int(scaled)
+except ValueError:
+    print(f"Invalid scaled {repr(scaled)}", file=sys.stderr)
     raise
 
 # this sets LOG_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
@@ -24,7 +31,7 @@ rule prepare_sample:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch translate {SAMPLES} -o {output}/sample.sig 2> {log}
+       sourmash sketch translate -p k={ksize},scaled={scaled} {SAMPLES} -o {output}/sample.sig 2> {log}
     """
 
 rule prepare_query:
@@ -37,7 +44,7 @@ rule prepare_query:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch translate {QUERY} -o {output}/query.sig 2> {log}
+       sourmash sketch translate -p k={ksize},scaled={scaled} {QUERY} -o {output}/query.sig 2> {log}
     """
 
 rule execute_query_command:
@@ -51,7 +58,7 @@ rule execute_query_command:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash search --containment {input.query} {input.sample} -o {output}/results.csv  2> {log}
+       sourmash search --threshold=0.0 --containment {input.query} {input.sample} -o {output}/results.csv  2> {log}
     """
 
 rule do_query:
