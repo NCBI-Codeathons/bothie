@@ -1,0 +1,5 @@
+name: entrez
+channels:
+        - bioconda
+dependencies:
+        - entrez-direct
