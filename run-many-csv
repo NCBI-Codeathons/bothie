@@ -81,6 +81,9 @@ def main():
     d = tempfile.mkdtemp(prefix=f'outputs.{args.tool}.', dir='.')
     output_dir = os.path.abspath(d)
 
+    timelog_filename = os.path.join(output_dir, 'timelog.out')
+    timelog_fp = open(timelog_filename, 'wt')
+
     tool_dir = args.tool
     config_file = os.path.abspath(args.config_file)
 
@@ -96,17 +99,19 @@ def main():
     results = []
 
     sample_num = 0
-    for sample in samples:
+    for sample in sorted(samples):
         sample_num += 1
         config_d['sample_prep_dir'] = os.path.join(output_dir,
                                                    f'prep.sample.{sample_num}')
         config_d['log_dir'] = os.path.join(output_dir, 'logs')
         config_d['metagenome_files'] = [sample]
 
+        print(datetime.datetime.now(), f'START SAMPLE PREP {sample_num}', file=timelog_fp)
         run_snakemake('prepare_sample', output_dir, config_d, tool_dir)
+        print(datetime.datetime.now(), f'END SAMPLE PREP {sample_num}', file=timelog_fp)
 
         query_num = 0
-        for query in samples.get(sample):
+        for query in sorted(samples.get(sample)):
             query_num += 1
             print('-----------------------------')
             print("query file:", query)
@@ -118,9 +123,13 @@ def main():
             config_d['query_prep_dir'] = query_prep_dir
             config_d['results_dir'] = results_dir
 
+            print(datetime.datetime.now(), f'START QUERY PREP {sample_num}.{query_num}', file=timelog_fp)
             run_snakemake('prepare_query', output_dir, config_d, tool_dir)
+            print(datetime.datetime.now(), f'END QUERY PREP {sample_num}.{query_num}', file=timelog_fp)
 
+            print(datetime.datetime.now(), f'START DO QUERY {sample_num}.{query_num}', file=timelog_fp)
             run_snakemake('do_query', output_dir, config_d, tool_dir)
+            print(datetime.datetime.now(), f'END DO QUERY {sample_num}.{query_num}', file=timelog_fp)
 
             result_file = os.path.join(results_dir, "RESULT")
             assert os.path.exists(result_file)
