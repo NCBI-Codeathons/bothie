@@ -1,0 +1,7 @@
+name: download-genomes
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - lxml=4.6.3

@@ -1,0 +1,69 @@
+import csv
+
+DOWNLOAD_DIR = config.get('download_dir', 'downloads')
+LOG_DIR = f"{DOWNLOAD_DIR}/logs"
+
+# load stuff from config
+ACCESSIONS=config.get('accessions', [])
+ACCESSIONS = [ x.strip() for x in ACCESSIONS]
+ACCESSIONS = [ x for x in ACCESSIONS if x ]
+
+# this sets LOG_DIR, DOWNLOAD_DIR, SAMPLE_PREP, and QUERY_PREP
+#include: '../common.snakefile'
+
+rule download_genomes:
+    input: expand(f"{LOG_DIR}/download-genomes/{{acc}}_genomic.fna.gz", acc=ACCESSIONS)
+
+
+# download genbank genome details; make an info.csv file for entry.
+rule make_genome_info_csv:
+    output:
+        csvfile = f'{DOWNLOAD_DIR}/download-genomes/info/{{acc}}.info.csv'
+    log: f"{LOG_DIR}/logs/download-genomes/{{acc}}.make_genome_info_csv.log"
+    conda: "download-genomes.yml"
+    benchmark: f"{LOG_DIR}/logs/download-genomes/{{acc}}.make_genome_info_csv.benchmark"
+    params: 
+        output_dir = f'{DOWNLOAD_DIR}/download-genomes/info'
+    shell: """
+        mkdir -p {params.output_dir}
+        python -Werror genbank_genomes.py {wildcards.acc} \
+            --output {output.csvfile}
+    """
+
+# download actual genomes!
+rule download_matching_genome_wc:
+    input:
+         csvfile = ancient(f'{DOWNLOAD_DIR}/download-genomes/info/{{acc}}.info.csv')
+    output:
+         genome = f"{LOG_DIR}/download-genomes/{{acc}}_genomic.fna.gz"
+    log: f"{LOG_DIR}/download-genomes/{{acc}}.make_genome_info_csv.log"
+    benchmark: f"{LOG_DIR}/download-genomes/{{acc}}.make_genome_info_csv.benchmark"
+    run:
+         with open(input.csvfile, 'rt') as infp:
+             r = csv.DictReader(infp)
+             rows = list(r)
+             assert len(rows) == 1
+             row = rows[0]
+             acc = row['acc']
+             assert wildcards.acc.startswith(acc)
+             url = row['genome_url']
+             name = row['ncbi_tax_name']
+
+             print(f"downloading genome for acc {acc}/{name} from NCBI...",
+                   file=sys.stderr)
+             with open(output.genome, 'wb') as outfp:
+                 with urllib.request.urlopen(url) as response:
+                     content = response.read()
+                     outfp.write(content)
+                     print(f"...wrote {len(content)} bytes to {output.genome}",
+                           file=sys.stderr)
+
+
+#rule write_bothie_configfile:
+#    input:  expand(f"{LOG_DIR}/download-genomes/{{acc}}_genomic.fna.gz", acc=ACCESSIONS)
+#    output: f"{LOG_DIR}/_____/{METAGENOME}.config"
+#    log: f"{LOG_DIR}/logs/_______/{METAGENOME}.write_bothie_config.log"
+#    benchmark: f"{LOG_DIR}/logs/_______/{METAGENOME}.write_bothie_config.benchmark"
+#    run:
+#
+#
