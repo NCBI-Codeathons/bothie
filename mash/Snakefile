@@ -68,7 +68,7 @@ rule do_query:
         with open(input.dir + '/results.csv', "rt") as fp:
             lines = fp.readlines()
 
-            # victory condition for sourmash - two lines in file :)
+            # victory condition for mash - one line in file :)
             found = False
             if len(lines) == 1:
                 found = True

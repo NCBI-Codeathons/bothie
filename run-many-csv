@@ -1,0 +1,134 @@
+#! /usr/bin/env python3
+"""
+Using a bothie tool directory (e.g. ./sourmash/), run multiple queries.
+
+* install tools
+* prepare sample
+* for each query, prepare and run query
+"""
+import sys
+import os
+import subprocess
+import datetime
+import shutil
+import argparse
+import yaml
+import tempfile
+from collections import defaultdict
+import csv
+
+
+def run_snakemake(target, output_dir, config_d, tool_dir):
+    assert output_dir.startswith('/') # abs path
+    config_filename = os.path.join(output_dir, 'conf.yml')
+    print('writing summary config file', config_filename)
+
+    with open(config_filename, 'wt') as fp:
+        yaml.dump(config_d, fp)
+
+    cmd = f"snakemake --use-conda -p -j 1 --configfile={config_filename} {target}"
+    print('running:', (cmd,))
+    subprocess.check_call(cmd, shell=True, cwd=tool_dir)
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('config_file', help='config file, YAML or JSON')
+    p.add_argument('tool', help='tool directory, e.g. sourmash')
+    p.add_argument('csvfile', help='CSV file containing queries x samples')
+    p.add_argument('-o', '--output', required=True, default=None,
+                   help="output CSV file containing results")
+
+    args = p.parse_args()
+
+    samples = defaultdict(list)
+
+    num_rows =0
+    with open(args.csvfile, newline="") as fp:
+        r = csv.DictReader(fp)
+
+        for row in r:
+            query = row['query']
+            sample = row['sample']
+
+            query = os.path.abspath(query)
+            sample = os.path.abspath(sample)
+
+            x = samples[sample]
+            x.append(query)
+
+            num_rows += 1
+
+    print(f'loaded {len(samples)} from {num_rows} total.')
+
+    d = tempfile.mkdtemp(prefix=f'outputs.{args.tool}.', dir='.')
+    output_dir = os.path.abspath(d)
+
+    tool_dir = args.tool
+    config_file = os.path.abspath(args.config_file)
+
+    with open(config_file, 'rt') as fp:
+        config_d = yaml.safe_load(fp)
+
+    config_d['sample_prep_dir'] = os.path.join(output_dir, 'FOO')
+    config_d['log_dir'] = os.path.join(output_dir, 'logs')
+
+    print('installing software:')
+    run_snakemake('install_software', output_dir, config_d, tool_dir)
+
+    results = []
+
+    sample_num = 0
+    for sample in samples:
+        sample_num += 1
+        config_d['sample_prep_dir'] = os.path.join(output_dir,
+                                                   f'prep.sample.{sample_num}')
+        config_d['log_dir'] = os.path.join(output_dir, 'logs')
+        config_d['metagenome_files'] = [sample]
+
+        run_snakemake('prepare_sample', output_dir, config_d, tool_dir)
+
+        query_num = 0
+        for query in samples.get(sample):
+            query_num += 1
+            print('-----------------------------')
+            print("query file:", query)
+
+            query_prep_dir = os.path.join(output_dir, f'prep.query.{sample_num}.{query_num}')
+            results_dir = os.path.join(output_dir, f'results.{sample_num}.{query_num}')
+
+            config_d['query_file'] = query
+            config_d['query_prep_dir'] = query_prep_dir
+            config_d['results_dir'] = results_dir
+
+            run_snakemake('prepare_query', output_dir, config_d, tool_dir)
+
+            run_snakemake('do_query', output_dir, config_d, tool_dir)
+
+            result_file = os.path.join(results_dir, "RESULT")
+            assert os.path.exists(result_file)
+            with open(result_file) as fp:
+                result = fp.read()
+                result = result.strip()
+                result = int(result)
+                result = bool(result)
+                if result:
+                    print('SUCCESS! It was found! :)', query)
+                else:
+                    print('FAILURE! It was not found! ;(', query)
+                results.append((sample, query, result, results_dir))
+
+    with open(args.output, 'w', newline='') as fp:
+        w = csv.writer(fp)
+        w.writerow(['sample', 'query', 'result', 'results_dir'])
+
+        for sample, query, result, results_dir in results:
+            sample = os.path.relpath(sample)
+            query = os.path.relpath(query)
+            results_dir = os.path.relpath(results_dir)
+            result = '1' if result else '0'
+            w.writerow([sample, query, result, results_dir])
+
+
+if __name__ == '__main__':
+    main()
