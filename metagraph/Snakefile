@@ -1,0 +1,87 @@
+import sys, os
+
+# load stuff from config file
+SAMPLES=config.get('metagenome_files', [])
+QUERY=config.get('query_file', '')
+minfrac = config.get('minimum_kmer_fraction', 0.5)
+molecule = config.get('molecule', 'DNA')  # Protein
+ksize = config.get('ksize', 'unset')
+
+
+try:
+    ksize = int(ksize)
+except ValueError:
+    print(f"Invalid ksize {repr(ksize)}", file=sys.stderr)
+    raise
+
+# this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
+include: '../common.snakefile'
+
+
+###
+### actual rules to run something
+###
+
+rule prepare_sample:
+    output: directory(SAMPLE_PREP)
+    conda: "./env.yml"
+    log: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.benchmark"
+    shell: """
+        rm -fr {output}
+        mkdir -p {output}
+
+        metagraph_{molecule} build -k {ksize} -o {output}/graph.dbg {SAMPLES}
+        metagraph_{molecule} annotate -i {output}/graph.dbg --anno-filename -o {output}/graph.column.annodbg {SAMPLES}
+    """
+
+rule prepare_query:
+    output: directory(QUERY_PREP)
+    conda: "./env.yml"
+    log: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.benchmark"
+    shell: """
+        rm -fr {output}
+        mkdir -p {output}
+    """
+
+rule execute_query_command:
+    input:
+        graph = f"{SAMPLE_PREP}/graph.dbg",
+        colors = f"{SAMPLE_PREP}/graph.column.annodbg",
+    output: directory(RESULTS_DIR)
+    log: f"{OUTPUT_DIR}/logs/metagraph/execute_query.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/execute_query.benchmark"
+    conda: "./env.yml"
+    shell: """
+        rm -fr {output}
+        mkdir -p {output}
+
+        metagraph_{molecule} query -i {input.graph} -a {input.colors} --discovery-fraction {minfrac} {QUERY} > {output}/results.csv  2> {log}
+    """
+
+rule do_query:
+    message: "Run query and evaluate if it found it, or not."
+    input: dir=RESULTS_DIR
+    run:
+        with open(input.dir + '/results.csv', "rt") as fp:
+            lines = fp.readlines()
+
+            # victory condition for metagraph - one line in file :)
+            found = False
+            if len(lines) == 1:
+                found = True
+        with open(input.dir + '/RESULT', 'wt') as fp:
+            if found:
+                fp.write('1\n')
+            else:
+                fp.write('0\n')
+
+
+rule install_software:
+    conda: "./env.yml"
+    log: f"{OUTPUT_DIR}/logs/metagraph/install_software.log"
+    benchmark: f"{OUTPUT_DIR}/logs/metagraph/install_software.benchmark"
+    shell: """
+        metagraph -h
+    """
