@@ -84,7 +84,14 @@ search the metagenome samples with the queries as specified in
 ./run-many-csv sourmash/conf-basic.yml sourmash data/data-small.csv -o out.csv
 ```
 
-The currently supported tools are `sourmash`, `cmash`, and `mash`.
+The currently supported tools are `sourmash`, `cmash`, `mash`, and `metagraph`.
+
+## Developer information
+
+You can run all the tools on a small test data set with:
+```
+./extra/run-test.sh
+```
 
 ## Team
 
