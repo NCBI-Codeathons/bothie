@@ -43,7 +43,8 @@ def main():
 
     samples = defaultdict(list)
 
-    num_rows =0
+    num_rows = 0
+    fail_not_found = False
     with open(args.csvfile, newline="") as fp:
         r = csv.DictReader(fp)
 
@@ -51,13 +52,29 @@ def main():
             query = row['query']
             sample = row['sample']
 
+            num_rows += 1
+
+            if not query or not os.path.exists(query):
+                fail_not_found = True
+                print(f"row {num_rows}, query '{query}' does not exist",
+                      file=sys.stderr)
+            if not sample or not os.path.exists(sample):
+                fail_not_found = True
+                print(f"row {num_rows}, sample '{sample}' does not exist",
+                      file=sys.stderr)
+
+            if fail_not_found:
+                continue
+
             query = os.path.abspath(query)
             sample = os.path.abspath(sample)
 
             x = samples[sample]
             x.append(query)
 
-            num_rows += 1
+
+    if fail_not_found:
+        sys.exit(-1)
 
     print(f'loaded {len(samples)} from {num_rows} total.')
 
