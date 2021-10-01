@@ -31,15 +31,6 @@ rule all:
                 zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
         kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}.final.tsv"),
                                      zip, environment = ALL_ENVS, metag_simple_id  = metags_simple)
-#	all_out_kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}", "parsed.tsv"),
-#			 zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
-#	all_out_centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}", "parsed.tsv"),
-#                         zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
-#	all_out_gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}", "parsed.tsv"),
-#                         zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
-#	all_out_envs = os.path.join(OUTPUTDIR, "all_parsed.tsv")
-
-#name    taxID    taxRank    genomeSize    numReads    numUniqueReads    abundance (centrifuge)
 rule centrifuge_rule:
     input:
         centrifuge_report = os.path.join(SAMPLESDIR, "{environment}", "nmdc:{metag_simple_id}",
@@ -55,7 +46,7 @@ rule centrifuge_rule:
         centrifuge_file = pd.read_csv(input.centrifuge_report, sep = "\t")
         centrifuge_file = centrifuge_file.loc[centrifuge_file.numReads > params.reads_cutoff,:]
         centrifuge_file = centrifuge_file[["name","taxID","taxRank"]].drop_duplicates()
-        
+
         tax_labels = list(set(centrifuge_file.taxRank))
         for tax_label in tax_labels:
             tax_curr_centrifuge = centrifuge_file.loc[centrifuge_file.taxRank == tax_label,:].reset_index(drop=True).drop_duplicates()
@@ -169,7 +160,7 @@ rule get_accessions:
             tax_ids = list(file_needed.taxID)
             textfile = open(output.ids_needed, "w")
             for element in tax_ids:
-                textfile.write(element + "\n")
+                textfile.write(str(element) + "\n")
 
 rule entrez_names:
     input:
@@ -184,7 +175,7 @@ rule entrez_names:
     shell:
         '''
         touch {output.tool_out}
-        cat {input.ids_needed} | while read line 
+        cat {input.ids_needed} | while read line
         do
             accession_curr=$(esearch -db nuccore -query "txid$line[Organism:exp] AND refseq[filter]"|efetch -format acc 2>> {log.out} 1>> {log.out})
             echo $accession_curr >> {output.tool_out}
@@ -196,7 +187,10 @@ rule add_accessions:
         tool_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}.all.parsed.tsv"),
         accessions_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}_accessions", "{metag_simple_id}.all.accessions.txt")
     output:
-        accessions_out = pd.read_csv(input.accessions_out,sep="\t",header=None,names="ncbiAccession",sep="\t")
+        all_tool = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}.final.tsv")
+    run:
+        accessions_out = pd.read_csv(input.accessions_out,sep="\t",header=None,names=["ncbiAccession"])
+	parsed_file = pd.read_csv(input.tool_out,sep="\t")
         parsed_file["ncbiAccession"] = accessions_out["ncbiAccession"]
         parsed_file.to_csv(output.all_tool, sep="\t")
 
@@ -220,16 +214,4 @@ rule all_other_rule:
                            "ncbi_tax_id","sci_name"], sep = "\t")
         parse_raw_read_file(reads_file, params.reads_cutoff,
                     params.metag_simple_id, params.outputdir, params.environment, tool=params.tool_name)
-#rule consolidate_all:
-#    input:
-#        all_reports = expand(os.path.join(OUTPUTDIR, "{tool_name}", "{environment}",
-#                   "{metag_simple_id}_phylum.parsed.tsv"),
-#                   tool_name = ["kraken"] * len(ALL_ENVS) + ["centrifuge"] * len(ALL_ENVS) +
-#                               ["gottcha"] * len(ALL_ENVS), environment = ALL_ENVS, metag_simple_id = metags_simple)
-#    output:
-#        all_out_envs = os.path.join(OUTPUTDIR, "all_parsed.tsv")
-#    shell:
-#        '''
-#        cat {input.all_reports} > {output.all_out_envs}
-#        '''
 
