@@ -27,11 +27,11 @@ print( ["kraken"] * len(ALL_ENVS) + ["centrifuge"] * len(ALL_ENVS) +
 READS_CUTOFF=config["read_cutoff"]
 rule all:
     input:
-        centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
+        centrifuge = expand(os.path.join(OUTPUTDIR, "centrifuge", "{environment}", "{metag_simple_id}.final.tsv"),
                     zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
-        gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
+        gottcha = expand(os.path.join(OUTPUTDIR, "gottcha", "{environment}", "{metag_simple_id}.final.tsv"),
                 zip, environment = ALL_ENVS, metag_simple_id  = metags_simple),
-        kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}_phylum.parsed.tsv"),
+        kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}.final.tsv"),
                                      zip, environment = ALL_ENVS, metag_simple_id  = metags_simple)
 #	all_out_kraken = expand(os.path.join(OUTPUTDIR, "kraken", "{environment}", "{metag_simple_id}", "parsed.tsv"),
 #			 zip, metag_simple_id = metags_simple, environment = ALL_ENVS),
@@ -87,6 +87,7 @@ def get_report(tool="gottcha",environment="marine",samplesdir=SAMPLESDIR,simple_
             return os.path.join(samplesdir,environment,"nmdc:" + simple_nmdc,"ReadbasedAnalysis","nmdc_" + simple_nmdc + "_centrifuge_report.tsv")
         elif tool == "kraken":
             return os.path.join(samplesdir,environment,"nmdc:" + simple_nmdc,"ReadbasedAnalysis","nmdc_" + simple_nmdc + "_kraken2_report.tsv")
+    return ""
 
 def parse_raw_read_file(read_map_file, reads_cutoff, metag_simple_id, outputdir, environment, tool="gottcha"):
     if tool == "centrifuge":
@@ -147,10 +148,10 @@ rule combine_all:
         dir_in = os.path.join(OUTPUTDIR,"{tool_name}","{environment}")
     run:
         all_files = os.listdir(os.path.join(params.dir_in))
-        selected_files = [curr for curr in all_files if params.metag_id in curr]
+        selected_files = [curr for curr in all_files if (params.metag_id in curr) & ("parsed" in curr)]
         df_to_ret = pd.DataFrame()
         for select_file in selected_files:
-            current_file = pd.read_csv(selected_files,sep = "\t")
+            current_file = pd.read_csv(os.path.join(params.dir_in,select_file),sep = "\t")
             df_to_ret = pd.concat([df_to_ret,current_file])
 
         df_to_ret.to_csv(output.tool_all,sep="\t")
@@ -184,8 +185,21 @@ rule entrez_names:
         cat {input.ids_needed} | while read line 
         do
             accession_curr=$(esearch -db nuccore -query "txid$line[Organism:exp] AND refseq[filter]"|efetch -format acc
-        done
+            echo $accession_curr >> {output.tool_out}
+	done
         '''
+
+rule add_accessions:
+    input:
+        tool_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}.all.parsed.tsv"),
+        accessions_out = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}_accessions", "{metag_simple_id}.all.accessions.txt")
+    output:
+        all_tool = os.path.join(OUTPUTDIR, "{tool_name}", "{environment}", "{metag_simple_id}.final.tsv")
+    run:
+        parsed_file = pd.read_csv(input.tool_out,sep="\t")
+        accessions_out = pd.read_csv(input.accessions_out,sep="\t",header=None,names="ncbiAccession")
+        parsed_file["ncbiAccession"] = accessions_out["ncbiAccession"]
+        parsed_file.to_csv(output.all_tool, sep="\t")
 
 rule all_other_rule:
     input:
