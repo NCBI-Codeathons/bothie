@@ -60,16 +60,37 @@ conda env create -n bothie -f environment.yml
 #     $ conda deactivate
 ```
 
-5. In the activated `conda` environment, you can run:
+5. In the activated `conda` environment, you can run the following.
+
+Search the metagenome sample configured in `sourmash/conf-basic.yml`
+using the tool `sourmash` with the query sequence in the file
+`genome-s10.fa.gz`:
 
 ```
 ./run-one-query sourmash/conf-basic.yml sourmash data/genome-s10.fa.gz
 ```
 
-or
-
+Search the metagenome sample configured in `sourmash/conf-basic.yml`
+using the tool `sourmash` with the query sequences in the two files
+`genome-s10.fa.gz.1000` and `genome-s10.fa.gz.10000`:
 ```
 ./run-many-queries sourmash/conf-basic.yml sourmash --queries data/genome-s10.fa.gz.{1000,10000}
+```
+
+Using the tool parameters in `sourmash/conf-basic.yml`,
+search the metagenome samples with the queries as specified in
+`data/data-small.csv`; store the results in `out.csv`.
+```
+./run-many-csv sourmash/conf-basic.yml sourmash data/data-small.csv -o out.csv
+```
+
+The currently supported tools are `sourmash`, `cmash`, `mash`, and `metagraph`.
+
+## Developer information
+
+You can run all the tools on a small test data set with:
+```
+./extra/run-test.sh
 ```
 
 ## Team
@@ -77,7 +98,7 @@ or
 + Tessa Pierce Ward: ntpierce@gmail.com
 + Olaitan Awe: laitanawe@gmail.com
 + Arianna krinos: akrinos@whoi.edu
-+ Minghand Lee: matchy@snu.ac.kr
++ Minghang Lee: matchy@snu.ac.kr
 + René KM Xavier: rmillerxavie2017@fau.edu
 + Rodrigo Polo: ropolo@gmail.com
 + Adelaide Rhodes: adelaide.rhodes@nih.gov

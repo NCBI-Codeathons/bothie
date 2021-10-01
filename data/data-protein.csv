@@ -1,0 +1,4 @@
+sample,query
+data/genome-s10.fa.gz.4000,data/genome-s10.fa.gz.100
+data/genome-s10.fa.gz.4000,data/genome-s10.fa.gz.4000
+data/genome-s10.fa.gz.4000,data/random-query.fa

@@ -1,0 +1,30 @@
+93%-identity reads to Wuhan-SC2
+-------------------------------
+
+These are reads from the Fr4nk CoV-like virus: 93% identity to RdRp of bat CoV. I took the BAM from https://github.com/ababaian/serratus/wiki/Fr4NK and extracted the 1000 first reads. 
+
+These reads map, but pretty badly, to sars-cov-2, as expected, e.g. with exonerate:
+
+    C4 Alignment:
+    ------------
+             Query: gi|1798174254|ref|NC_045512.2| Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+            Target: ERR2756788.5268957/2 [revcomp]
+             Model: ungapped:dna2dna
+         Raw score: 368
+       Query range: 19176 -> 19327
+      Target range: 151 -> 0
+    
+     19177 : GGTGTATGCCTATTTTGGAATTGCAATGTCGATAGATATCCTGCTAATTCCATTGTTTGT : 19236
+             ||  | ||  | ||||||||||||||||| || |  || || | |  | |  |||||||
+       151 : GGGCTGTGTTTTTTTTGGAATTGCAATGTTGACATGTACCCAGGTTTTGCTGTTGTTTGC :    92
+    
+     19237 : AGATTTGACACTAGAGTGCTATCTAACCTTAACTTGCCTGGTTGTGATGGTGGCAGTTTG : 19296
+              | ||||||||| | ||    || || ||||| |||  ||||    ||||||||  ||||
+        91 : CGCTTTGACACTCGTGTTAAGTCCAAACTTAATTTGGATGGTGTCAATGGTGGCTCTTTG :    32
+    
+     19297 : TATGTAAATAAACATGCATTCCACACACCAG : 19327
+             ||||| || || || || |||||||||||||
+        31 : TATGTTAACAATCACGCGTTCCACACACCAG :     1
+    
+    vulgar: gi|1798174254|ref|NC_045512.2| 19176 19327 + ERR2756788.5268957/2 151 0 - 368 M 151 151
+

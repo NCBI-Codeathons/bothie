@@ -22,8 +22,8 @@ include: '../common.snakefile'
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/mash2.yml"
-    log: f"{OUTPUT_DIR}/logs/mash/prepare_sample.log"
-    benchmark: f"{OUTPUT_DIR}/logs/mash/prepare_sample.benchmark"
+    log: f"{LOG_DIR}/prepare_sample.log"
+    benchmark: f"{LOG_DIR}/prepare_sample.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
@@ -33,8 +33,8 @@ rule prepare_sample:
 rule prepare_query:
     output: directory(QUERY_PREP)
     conda: "../conf/env/mash2.yml"
-    log: f"{OUTPUT_DIR}/logs/mash/prepare_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/mash/prepare_query.benchmark"
+    log: f"{LOG_DIR}/prepare_query.log"
+    benchmark: f"{LOG_DIR}/prepare_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
@@ -49,8 +49,8 @@ rule execute_query_command:
         query = f"{QUERY_PREP}/query.msh",
         sample = SAMPLES,
     output: directory(RESULTS_DIR)
-    log: f"{OUTPUT_DIR}/logs/mash/execute_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/mash/execute_query.benchmark"
+    log: f"{LOG_DIR}/execute_query.log"
+    benchmark: f"{LOG_DIR}/execute_query.benchmark"
     conda: "../conf/env/mash2.yml"
     shell: """
        rm -fr {output}
@@ -68,7 +68,7 @@ rule do_query:
         with open(input.dir + '/results.csv', "rt") as fp:
             lines = fp.readlines()
 
-            # victory condition for sourmash - two lines in file :)
+            # victory condition for mash - one line in file :)
             found = False
             if len(lines) == 1:
                 found = True
@@ -81,8 +81,8 @@ rule do_query:
 
 rule install_software:
     conda: "../conf/env/mash2.yml"
-    log: f"{OUTPUT_DIR}/logs/mash/install_software.log"
-    benchmark: f"{OUTPUT_DIR}/logs/mash/install_software.benchmark"
+    log: f"{LOG_DIR}/install_software.log"
+    benchmark: f"{LOG_DIR}/install_software.benchmark"
     shell: """
        mash --version 2> {log}
     """

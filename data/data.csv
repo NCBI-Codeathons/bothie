@@ -1,0 +1,13 @@
+sample,query
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.100
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.500
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.1000
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.2000
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.3000
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.4000
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.5000
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz.10000
+data/genome-s10+s11.fa.gz,data/genome-s10.fa.gz
+data/genome-s10.fa.gz,data/genome-s10.fa.gz.100
+data/genome-s10.fa.gz,data/genome-s10.fa.gz.10000
+data/genome-s10+s11.fa.gz,data/random-query.fa

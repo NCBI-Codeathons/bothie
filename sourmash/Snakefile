@@ -2,6 +2,7 @@
 SAMPLES=config.get('metagenome_files', [])
 QUERY=config.get('query_file', '')
 ksize = config.get('ksize', 'unset')
+scaled = config.get('scaled', 'unset')
 
 try:
     ksize = int(ksize)
@@ -9,7 +10,13 @@ except ValueError:
     print(f"Invalid ksize {repr(ksize)}", file=sys.stderr)
     raise
 
-# this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
+try:
+    scaled = int(scaled)
+except ValueError:
+    print(f"Invalid scaled {repr(scaled)}", file=sys.stderr)
+    raise
+
+# this sets LOG_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP
 include: '../common.snakefile'
 
 ###
@@ -19,12 +26,12 @@ include: '../common.snakefile'
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/sourmash4.yml"
-    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_sample.benchmark"
+    log: f"{LOG_DIR}/prepare_sample.log"
+    benchmark: f"{LOG_DIR}/prepare_sample.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {SAMPLES} -o {output}/sample.sig 2> {log}
+       sourmash sketch dna -p k={ksize},scaled={scaled} {SAMPLES} -o {output}/sample.sig 2> {log}
     """
 
 rule prepare_query:
@@ -32,12 +39,12 @@ rule prepare_query:
     conda: "../conf/env/sourmash4.yml"
     params:
         name = os.path.basename(QUERY)
-    log: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/prepare_query.benchmark"
+    log: f"{LOG_DIR}/prepare_query.log"
+    benchmark: f"{LOG_DIR}/prepare_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash sketch dna -p k={ksize} {QUERY} -o {output}/query.sig \
+       sourmash sketch dna -p k={ksize},scaled={scaled} {QUERY} -o {output}/query.sig \
           --merge {params.name}  2> {log}
     """
 
@@ -47,18 +54,18 @@ rule execute_query_command:
         sample = f"{SAMPLE_PREP}/sample.sig",
     output: directory(RESULTS_DIR)
     conda: "../conf/env/sourmash4.yml"
-    log: f"{OUTPUT_DIR}/logs/sourmash/execute_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/execute_query.benchmark"
+    log: f"{LOG_DIR}/execute_query.log"
+    benchmark: f"{LOG_DIR}/execute_query.benchmark"
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       sourmash search --containment {input.query} {input.sample} -o {output}/results.csv  2> {log}
+       sourmash search --threshold=0.0 --containment {input.query} {input.sample} -o {output}/results.csv  2> {log}
     """
 
 rule do_query:
     message: "Run query and evaluate if it found it, or not."
     input: dir=RESULTS_DIR
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/do_query.benchmark"
+    benchmark: f"{LOG_DIR}/do_query.benchmark"
     run:
         with open(input.dir + '/results.csv', "rt") as fp:
             lines = fp.readlines()
@@ -75,8 +82,8 @@ rule do_query:
 
 rule install_software:
     conda: "../conf/env/sourmash4.yml"
-    log: f"{OUTPUT_DIR}/logs/sourmash/install_software.log"
-    benchmark: f"{OUTPUT_DIR}/logs/sourmash/install_software.benchmark"
+    log: f"{LOG_DIR}/install_software.log"
+    benchmark: f"{LOG_DIR}/install_software.benchmark"
     shell: """
        sourmash --version 2> {log}
     """

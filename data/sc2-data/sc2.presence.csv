@@ -1,0 +1,5 @@
+query,sample,present
+SRR11826866,NC_045512.fasta,yes
+ERR4080688,NC_045512.fasta,yes
+ERR2756788,NC_045512.fasta,yes
+SRR15657795,NC_045512.fasta,no
