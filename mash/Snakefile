@@ -38,7 +38,7 @@ rule prepare_query:
     shell: """
        rm -fr {output}
        mkdir -p {output}
-       mash sketch -k {ksize} {QUERY} -o {output}/query.msh 2> {log}
+       mash sketch -k {ksize} -s 20000 {QUERY} -o {output}/query.msh 2> {log}
     """
 
 rule execute_query_command:
