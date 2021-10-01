@@ -96,7 +96,7 @@ def main():
     results = []
 
     sample_num = 0
-    for sample in samples:
+    for sample in sorted(samples):
         sample_num += 1
         config_d['sample_prep_dir'] = os.path.join(output_dir,
                                                    f'prep.sample.{sample_num}')
@@ -106,7 +106,7 @@ def main():
         run_snakemake('prepare_sample', output_dir, config_d, tool_dir)
 
         query_num = 0
-        for query in samples.get(sample):
+        for query in sorted(samples.get(sample)):
             query_num += 1
             print('-----------------------------')
             print("query file:", query)
