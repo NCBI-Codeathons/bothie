@@ -1,0 +1,16 @@
+metagenome_files:
+- ../data/genome-s10+s11.fa.gz
+
+# cmash config params
+# Use streaming or not
+use_stream: true
+
+# Use sensitive mode or not (only marginally increase true positives), be careful
+use_sensitive: false
+
+# Range of k-mer sizes in the formate <start>-<end>-<increment>.
+# So 5-10-2 means [5, 7, 9].
+# If <end> is larger than the k-mer size of the training data,
+# this will automatically be reduced.
+# FIXME: Mysteriously <start> cannot be larger than 22 or an index out of range bug will occur
+k_range: 10-21-2

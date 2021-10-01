@@ -1,4 +1,7 @@
-metagenome_files: 
+metagenome_files:
 - ../data/genome-s10+s11.fa.gz
 
-# cmash config params
+### cmash config params
+# Use streaming or not
+use_stream: false
+ksize: 21
