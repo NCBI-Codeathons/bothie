@@ -3,4 +3,6 @@ metagenome_files:
 - ../data/marine/SLE_2018_wet.fq.gz
 
 # sourmash-specific config params
-ksize: 31
+# sourmash-specific config params
+ksize: 10
+scaled: 200
