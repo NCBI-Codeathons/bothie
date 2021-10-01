@@ -1,0 +1,8 @@
+# one or more files that will be combined into a single sample database
+metagenome_files:
+- ../data/marine/SLE_2018_wet.fq.gz
+
+# sourmash-specific config params
+# sourmash-specific config params
+ksize: 10
+scaled: 200
