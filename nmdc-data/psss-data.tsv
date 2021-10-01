@@ -1,0 +1,87 @@
+MGA_ID	SRP	SRX	SRS	SRR	TAXID	TAXA	GCP_PATH	AWS_PATH
+nmdc:mga08j52	SRP190865	SRX5636966	SRS4582705	SRR8849208	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga08j52	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga08j52
+nmdc:mga0j795	SRP190865	SRX5636885	SRS4582624	SRR8849289	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0j795	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0j795
+nmdc:mga02197	SRP278138	SRX9564128	SRS7767240	SRR13122219	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga02197	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga02197
+nmdc:mga0qh70	SRP278138	SRX8973794	SRS7229387	SRR12480103	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0qh70	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0qh70
+nmdc:mga0f210	SRP190865	SRX5636958	SRS4582697	SRR8849216	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0f210	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0f210
+nmdc:mga0em52	SRP190865	SRX5636973	SRS4582712	SRR8849201	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0em52	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0em52
+nmdc:mga0rj68	SRP190865	SRX5636960	SRS4582699	SRR8849214	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0rj68	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0rj68
+nmdc:mga0nn56	SRP190865	SRX5636934	SRS4582673	SRR8849240	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0nn56	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0nn56
+nmdc:mga0b497	SRP278138	SRX9564192	SRS7760193	SRR13122155	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0b497	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0b497
+nmdc:mga04684	SRP190865	SRX5636895	SRS4582634	SRR8849279	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga04684	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga04684
+nmdc:mga0s705	SRP190865	SRX5636970	SRS4582709	SRR8849204	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0s705	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0s705
+nmdc:mga0ke75	SRP190865	SRX5636921	SRS4582660	SRR8849253	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0ke75	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0ke75
+nmdc:mga0x030	SRP278138	SRX8974165	SRS7229758	SRR12480197	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0x030	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0x030
+nmdc:mga0jz23	SRP190865	SRX5636910	SRS4582649	SRR8849264	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0jz23	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0jz23
+nmdc:mga0bd70	SRP190865	SRX5636926	SRS4582665	SRR8849248	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0bd70	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0bd70
+nmdc:mga0zc93	SRP190865	SRX5636968	SRS4582707	SRR8849206	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0zc93	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0zc93
+nmdc:mga0hf70	SRP278138	SRX8973912	SRS7229506	SRR12479985	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0hf70	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0hf70
+nmdc:mga0cx23	SRP190865	SRX5636904	SRS4582643	SRR8849270	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0cx23	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0cx23
+nmdc:mga09689	SRP190865	SRX5636954	SRS4582693	SRR8849220	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga09689	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga09689
+nmdc:mga04781	SRP278138	SRX9564071	SRS7772446	SRR13122276	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga04781	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga04781
+nmdc:mga0wr54	SRP190865	SRX5636922	SRS4582661	SRR8849252	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0wr54	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0wr54
+nmdc:mga03a71	SRP190865	SRX5636901	SRS4582640	SRR8849273	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga03a71	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga03a71
+nmdc:mga0py30	SRP278138	SRX8973623	SRS7229216	SRR12479809	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0py30	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0py30
+nmdc:mga0nd80	SRP278138	SRX9564256	SRS7758293	SRR13122091	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0nd80	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0nd80
+nmdc:mga07008	SRP190865	SRX5636975	SRS4582714	SRR8849199	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga07008	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga07008
+nmdc:mga06w20	SRP278138	SRX9564146	SRS7758535	SRR13122201	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga06w20	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga06w20
+nmdc:mga05685	SRP278138	SRX8973620	SRS7229213	SRR12479812	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga05685	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga05685
+nmdc:mga0df66	SRP190865	SRX5636929	SRS4582668	SRR8849245	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0df66	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0df66
+nmdc:mga06s29	SRP278138	SRX8974126	SRS7229719	SRR12480236	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga06s29	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga06s29
+nmdc:mga0m312	SRP190865	SRX5636914	SRS4582653	SRR8849260	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0m312	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0m312
+nmdc:mga0k990	SRP190865	SRX5636905	SRS4582644	SRR8849269	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0k990	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0k990
+nmdc:mga0g987	SRP190865	SRX5636888	SRS4582627	SRR8849286	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0g987	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0g987
+nmdc:mga02294	SRP190865	SRX5636908	SRS4582647	SRR8849266	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga02294	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga02294
+nmdc:mga0w223	SRP278138	SRX8974175	SRS7229769	SRR12480187	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0w223	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0w223
+nmdc:mga0f404	SRP190865	SRX5636902	SRS4582641	SRR8849272	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0f404	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0f404
+nmdc:mga0cr38	SRP190865	SRX5636931	SRS4582670	SRR8849243	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0cr38	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0cr38
+nmdc:mga0fc77	SRP190865	SRX5636947	SRS4582686	SRR8849227	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0fc77	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0fc77
+nmdc:mga0h988	SRP190865	SRX5636952	SRS4582691	SRR8849222	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0h988	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0h988
+nmdc:mga0dx24	SRP190865	SRX5636962	SRS4582701	SRR8849212	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0dx24	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0dx24
+nmdc:mga0kv36	SRP190865	SRX5636972	SRS4582711	SRR8849202	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0kv36	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0kv36
+nmdc:mga06686	SRP190865	SRX5636886	SRS4582625	SRR8849288	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga06686	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga06686
+nmdc:mga03d62	SRP190865	SRX5636891	SRS4582630	SRR8849283	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga03d62	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga03d62
+nmdc:mga0ja86	SRP190865	SRX5636965	SRS4582704	SRR8849209	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0ja86	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0ja86
+nmdc:mga04z09	SRP278138	SRX9564290	SRS7768376	SRR13122057	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga04z09	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga04z09
+nmdc:mga00w14	SRP190865	SRX5636913	SRS4582652	SRR8849261	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga00w14	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga00w14
+nmdc:mga0kf72	SRP190865	SRX5636935	SRS4582674	SRR8849239	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0kf72	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0kf72
+nmdc:mga03004	SRP278138	SRX8974042	SRS7229635	SRR12480320	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga03004	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga03004
+nmdc:mga0j310	SRP190865	SRX5636930	SRS4582669	SRR8849244	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0j310	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0j310
+nmdc:mga0f307	SRP278138	SRX8973698	SRS7229291	SRR12479734	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0f307	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0f307
+nmdc:mga00f53	SRP265880	SRX7415194	SRS5862060	SRR10739566	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga00f53	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga00f53
+nmdc:mga08w22	SRP278138	SRX9564114	SRS7762365	SRR13122233	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga08w22	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga08w22
+nmdc:mga0rn59	SRP190865	SRX5636900	SRS4582639	SRR8849274	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0rn59	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0rn59
+nmdc:mga0qd82	SRP190865	SRX5636887	SRS4582626	SRR8849287	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0qd82	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0qd82
+nmdc:mga0rz29	SRP190865	SRX5636906	SRS4582645	SRR8849268	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0rz29	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0rz29
+nmdc:mga08f61	SRP190865	SRX5636956	SRS4582695	SRR8849218	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga08f61	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga08f61
+nmdc:mga0md79	SRP190865	SRX5636976	SRS4582715	SRR8849198	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0md79	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0md79
+nmdc:mga0nc83	SRP190865	SRX5636912	SRS4582651	SRR8849262	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0nc83	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0nc83
+nmdc:mga0rq53	SRP190865	SRX5636907	SRS4582646	SRR8849267	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0rq53	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0rq53
+nmdc:mga0h309	SRP190865	SRX5636916	SRS4582655	SRR8849258	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0h309	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0h309
+nmdc:mga06y14	SRP278138	SRX8974242	SRS7229835	SRR12480120	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga06y14	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga06y14
+nmdc:mga01293	SRP278138	SRX8973635	SRS7229228	SRR12479797	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga01293	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga01293
+nmdc:mga01r27	SRP190865	SRX5636898	SRS4582637	SRR8849276	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga01r27	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga01r27
+nmdc:mga0aq39	SRP190865	SRX5636942	SRS4582681	SRR8849232	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0aq39	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0aq39
+nmdc:mga04490	SRP190865	SRX5636919	SRS4582658	SRR8849255	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga04490	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga04490
+nmdc:mga0xa97	SRP278138	SRX8973801	SRS7229394	SRR12480096	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0xa97	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0xa97
+nmdc:mga0km57	SRP278138	SRX9564190	SRS7759567	SRR13122157	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0km57	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0km57
+nmdc:mga0d402	SRP278138	SRX8973587	SRS7229180	SRR12479845	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0d402	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0d402
+nmdc:mga00p32	SRP278138	SRX8974192	SRS7229785	SRR12480170	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga00p32	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga00p32
+nmdc:mga0w126	SRP278138	SRX9564148	SRS7774498	SRR13122199	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0w126	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0w126
+nmdc:mga0jt38	SRP190865	SRX5636943	SRS4582682	SRR8849231	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0jt38	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0jt38
+nmdc:mga0az15	SRP278138	SRX8973743	SRS7229336	SRR12479689	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0az15	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0az15
+nmdc:mga0sm63	SRP190865	SRX5636961	SRS4582700	SRR8849213	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0sm63	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0sm63
+nmdc:mga0nv38	SRP278138	SRX8973979	SRS7229572	SRR12479918	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0nv38	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0nv38
+nmdc:mga0ef67	SRP278138	SRX8974238	SRS7229831	SRR12480124	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0ef67	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0ef67
+nmdc:mga0zg81	SRP190865	SRX5636889	SRS4582628	SRR8849285	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0zg81	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0zg81
+nmdc:mga0sr51	SRP278138	SRX9564099	SRS7774881	SRR13122248	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0sr51	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0sr51
+nmdc:mga0x224	SRP190865	SRX5636941	SRS4582680	SRR8849233	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0x224	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0x224
+nmdc:mga0dp45	SRP190865	SRX5636884	SRS4582623	SRR8849290	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0dp45	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0dp45
+nmdc:mga08v25	SRP190865	SRX5636971	SRS4582710	SRR8849203	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga08v25	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga08v25
+nmdc:mga0hn52	SRP278138	SRX9564273	SRS7773438	SRR13122074	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0hn52	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0hn52
+nmdc:mga00z05	SRP278138	SRX8974007	SRS7229600	SRR12480355	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga00z05	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga00z05
+nmdc:mga0qa91	SRP190865	SRX5636923	SRS4582662	SRR8849251	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0qa91	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0qa91
+nmdc:mga0ky27	SRP190865	SRX5636964	SRS4582703	SRR8849210	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0ky27	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0ky27
+nmdc:mga0x709	SRP190865	SRX5636903	SRS4582642	SRR8849271	408170	human gut metagenome	gs://psss-metagenomics-codeathon-data/gut/nmdc:mga0x709	s3://psss-metagenomics-codeathon-data/gut/nmdc:mga0x709
+nmdc:mga0w514	SRP278138	SRX8973964	SRS7229557	SRR12479933	408172	marine metagenome	gs://psss-metagenomics-codeathon-data/marine/nmdc:mga0w514	s3://psss-metagenomics-codeathon-data/marine/nmdc:mga0w514
+1781_100342	SRP287689	SRX9603516	SRS7807226	SRR13164630	556182	freshwater sediment metagenome	gs://psss-metagenomics-codeathon-data/soil/1781_100342	s3://psss-metagenomics-codeathon-data/soil/1781_100342

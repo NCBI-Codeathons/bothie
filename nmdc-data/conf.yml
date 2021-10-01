@@ -1,0 +1,8 @@
+data_tsv: psss-data.tsv
+
+# anything in 'files' will be downloaded
+files:
+- assembly/{prefix}_contigs.fna
+- assembly/{prefix}_contigs.fna.md5
+- qa/{prefix}_filtered.fastq.gz
+- qa/{prefix}_filtered.fastq.gz.md5

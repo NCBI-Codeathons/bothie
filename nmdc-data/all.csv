@@ -1,0 +1,16 @@
+sample,query
+nmdc-data/qa/nmdc_mga0j795_filtered.fastq.gz,data/nmdc_mga02197.query.100.fa.gz
+nmdc-data/qa/nmdc_mga0j795_filtered.fastq.gz,data/nmdc_mga02197.query.1000.fa.gz
+nmdc-data/qa/nmdc_mga0j795_filtered.fastq.gz,data/nmdc_mga02197.query.10000.fa.gz
+nmdc-data/qa/1781_100342_filtered.fastq.gz,data/nmdc_mga02197.query.100.fa.gz
+nmdc-data/qa/1781_100342_filtered.fastq.gz,data/nmdc_mga02197.query.1000.fa.gz
+nmdc-data/qa/1781_100342_filtered.fastq.gz,data/nmdc_mga02197.query.10000.fa.gz
+nmdc-data/qa/nmdc_mga0qh70_filtered.fastq.gz,data/nmdc_mga02197.query.100.fa.gz
+nmdc-data/qa/nmdc_mga0qh70_filtered.fastq.gz,data/nmdc_mga02197.query.1000.fa.gz
+nmdc-data/qa/nmdc_mga0qh70_filtered.fastq.gz,data/nmdc_mga02197.query.10000.fa.gz
+nmdc-data/qa/nmdc_mga08j52_filtered.fastq.gz,data/nmdc_mga02197.query.100.fa.gz
+nmdc-data/qa/nmdc_mga08j52_filtered.fastq.gz,data/nmdc_mga02197.query.1000.fa.gz
+nmdc-data/qa/nmdc_mga08j52_filtered.fastq.gz,data/nmdc_mga02197.query.10000.fa.gz
+nmdc-data/qa/nmdc_mga02197_filtered.fastq.gz,data/nmdc_mga02197.query.100.fa.gz
+nmdc-data/qa/nmdc_mga02197_filtered.fastq.gz,data/nmdc_mga02197.query.1000.fa.gz
+nmdc-data/qa/nmdc_mga02197_filtered.fastq.gz,data/nmdc_mga02197.query.10000.fa.gz
