@@ -25,8 +25,8 @@ include: '../common.snakefile'
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "./env.yml"
-    log: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.log"
-    benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_sample.benchmark"
+    log: f"{LOG_DIR}/prepare_sample.log"
+    benchmark: f"{LOG_DIR}/prepare_sample.benchmark"
     shell: """
         rm -fr {output}
         mkdir -p {output}
@@ -38,8 +38,8 @@ rule prepare_sample:
 rule prepare_query:
     output: directory(QUERY_PREP)
     conda: "./env.yml"
-    log: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/metagraph/prepare_query.benchmark"
+    log: f"{LOG_DIR}/prepare_query.log"
+    benchmark: f"{LOG_DIR}/prepare_query.benchmark"
     shell: """
         rm -fr {output}
         mkdir -p {output}
@@ -50,8 +50,8 @@ rule execute_query_command:
         graph = f"{SAMPLE_PREP}/graph.dbg",
         colors = f"{SAMPLE_PREP}/graph.column.annodbg",
     output: directory(RESULTS_DIR)
-    log: f"{OUTPUT_DIR}/logs/metagraph/execute_query.log"
-    benchmark: f"{OUTPUT_DIR}/logs/metagraph/execute_query.benchmark"
+    log: f"{LOG_DIR}/execute_query.log"
+    benchmark: f"{LOG_DIR}/execute_query.benchmark"
     conda: "./env.yml"
     shell: """
         rm -fr {output}
@@ -80,8 +80,8 @@ rule do_query:
 
 rule install_software:
     conda: "./env.yml"
-    log: f"{OUTPUT_DIR}/logs/metagraph/install_software.log"
-    benchmark: f"{OUTPUT_DIR}/logs/metagraph/install_software.benchmark"
+    log: f"{LOG_DIR}/install_software.log"
+    benchmark: f"{LOG_DIR}/install_software.benchmark"
     shell: """
         metagraph -h
     """

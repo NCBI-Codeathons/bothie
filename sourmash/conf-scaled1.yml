@@ -4,4 +4,4 @@ metagenome_files:
 
 # sourmash-specific config params
 ksize: 31
-scaled: 1000
+scaled: 1
