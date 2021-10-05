@@ -23,6 +23,14 @@ include: '../common.snakefile'
 ### actual rules to run something
 ###
 
+rule install_software:
+    conda: "../conf/env/sourmash4.yml"
+    log: f"{LOG_DIR}/install_software.log"
+    benchmark: f"{LOG_DIR}/install_software.benchmark"
+    shell: """
+       sourmash --version 2> {log}
+    """
+
 rule prepare_sample:
     output: directory(SAMPLE_PREP)
     conda: "../conf/env/sourmash4.yml"
@@ -50,6 +58,8 @@ rule prepare_query:
 
 rule execute_query_command:
     input:
+        sample_prep = rules.prepare_sample.output,
+        query_prep = rules.prepare_query.output,
         query = f"{QUERY_PREP}/query.sig",
         sample = f"{SAMPLE_PREP}/sample.sig",
     output: directory(RESULTS_DIR)
@@ -64,7 +74,8 @@ rule execute_query_command:
 
 rule do_query:
     message: "Run query and evaluate if it found it, or not."
-    input: dir=RESULTS_DIR
+    input:
+        dir=RESULTS_DIR
     benchmark: f"{LOG_DIR}/do_query.benchmark"
     run:
         with open(input.dir + '/results.csv', "rt") as fp:
@@ -80,10 +91,5 @@ rule do_query:
             else:
                 fp.write('0\n')
 
-rule install_software:
-    conda: "../conf/env/sourmash4.yml"
-    log: f"{LOG_DIR}/install_software.log"
-    benchmark: f"{LOG_DIR}/install_software.benchmark"
-    shell: """
-       sourmash --version 2> {log}
-    """
+print('XXX', (rules.prepare_sample.output,))
+print('YYY', (rules.prepare_query.output,))

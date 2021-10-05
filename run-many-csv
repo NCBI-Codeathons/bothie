@@ -106,9 +106,9 @@ def main():
         config_d['log_dir'] = os.path.join(output_dir, 'logs')
         config_d['metagenome_files'] = [sample]
 
-        print(datetime.datetime.now(), f'START SAMPLE PREP {sample_num}', file=timelog_fp)
-        run_snakemake('prepare_sample', output_dir, config_d, tool_dir)
-        print(datetime.datetime.now(), f'END SAMPLE PREP {sample_num}', file=timelog_fp)
+        #print(datetime.datetime.now(), f'START SAMPLE PREP {sample_num}', file=timelog_fp)
+        #run_snakemake('prepare_sample', output_dir, config_d, tool_dir)
+        #print(datetime.datetime.now(), f'END SAMPLE PREP {sample_num}', file=timelog_fp)
 
         query_num = 0
         for query in sorted(samples.get(sample)):
