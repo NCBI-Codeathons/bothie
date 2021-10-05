@@ -1,0 +1,7 @@
+sample,query
+data/sc2-data/sc2_queries_across_identity/99p/SRR11826866.singleton-fastq/SRR11826866.9688.fq,data/sc2-data/NC_045512.fasta
+data/sc2-data/sc2_queries_across_identity/99p/SRR11826866.singleton-fastq/SRR11826866.2385.fq,data/sc2-data/NC_045512.fasta
+data/sc2-data/sc2_queries_across_identity/93p/ERR2756788.singleton-fastq/ERR2756788.8102751.2.fq,data/sc2-data/NC_045512.fasta
+data/sc2-data/sc2_queries_across_identity/93p/ERR2756788.singleton-fastq/ERR2756788.13119704.2.fq,data/sc2-data/NC_045512.fasta
+data/sc2-data/sc2_queries_across_identity/95p/ERR4080688.singleton-fastq/ERR4080688.ERR4080688.16.fq,data/sc2-data/NC_045512.fasta
+data/sc2-data/sc2_queries_across_identity/95p/ERR4080688.singleton-fastq/ERR4080688.ERR4080688.6.fq,data/sc2-data/NC_045512.fasta
