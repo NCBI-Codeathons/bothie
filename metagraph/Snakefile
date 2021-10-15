@@ -67,10 +67,15 @@ rule do_query:
         with open(input.dir + '/results.csv', "rt") as fp:
             lines = fp.readlines()
 
-            # victory condition for metagraph - one line in file :)
+            # victory condition for metagraph -
+            # TSV, third colum of first row is nonempty
             found = False
-            if len(lines) == 1:
+            assert len(lines) == 1, "output should have exactly one line"
+            line = lines[0].split('\t')
+            match_name = line[2]
+            if match_name.strip():
                 found = True
+
         with open(input.dir + '/RESULT', 'wt') as fp:
             if found:
                 fp.write('1\n')
