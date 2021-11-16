@@ -5,7 +5,8 @@ metagenome_files:
 #positive control
 - ../data/marine/SLE_2018_wet.fq.gz
 
+# default output directory
+output_dir: outputs/
+
 # sourmash-specific config params
-# sourmash-specific config params
-ksize: 10
-scaled: 200
+ksize: 31

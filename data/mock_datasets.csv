@@ -1,4 +1,5 @@
 query,sample
+../data/query/domoic_acid_sequence.fna,../data/sample/mock_8M_HAB_metagenome.fq.gz
 ../data/query/Pelagibacter_sp_HIMB1321_IMG_2547132513.fna,../data/sample/mock_8M_HAB_metagenome.fq.gz
 ../data/query/Pelagibacter_sp_HTCC7211_IMG_2503283017.fna,../data/sample/mock_8M_HAB_metagenome.fq.gz
 ../data/query/Qipengyuania_flava.fna,../data/sample/mock_8M_HAB_metagenome.fq.gz
