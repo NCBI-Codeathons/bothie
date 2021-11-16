@@ -1,3 +1,6 @@
 .snakemake
 *~
 outputs.*
+download-genomes/downloads/*
+2021-psss-download-nmdc/*
+data/*
