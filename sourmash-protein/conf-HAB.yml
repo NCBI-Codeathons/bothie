@@ -3,7 +3,7 @@ metagenome_files:
 #negative control
 - ../data/genome-s10+s11.fa.gz
 #positive control
-- ../data/marine/SLE_2018_wet.fq.gz
+- ../data/sample/SLE_2018_wet.fq.gz
 
 # sourmash-specific config params
 # sourmash-specific config params
