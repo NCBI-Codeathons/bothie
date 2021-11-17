@@ -1,0 +1,1 @@
+/home/ubuntu/bothie/data/marine/assembly/nmdc_mga0x030_contigs.fna
