@@ -8,7 +8,7 @@ set -e
 
 for tool in sourmash mash cmash metagraph sourmash-protein
 do
-    ./run-many-csv ${tool}/conf-HAB.yml $tool data/mock_datasets.csv -o HAB-${tool}.csv
+    ./run-many-csv ${tool}/conf-HAB.yml $tool data/BGC.csv -o BGC-${tool}.csv
 done
 
 echo success!
