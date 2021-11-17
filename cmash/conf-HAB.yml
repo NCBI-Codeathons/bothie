@@ -1,7 +1,5 @@
 metagenome_files:
-#negative control
-- ../data/genome-s10+s11.fa.gz
-#positive control
-- ../data/sample/SLE_2018_wet.fq.gz
+- ../data/marine/SLE_2018_wet.fq.gz
+
 
 # cmash config params

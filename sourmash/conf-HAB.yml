@@ -1,9 +1,7 @@
 # one or more files that will be combined into a single sample database
 metagenome_files:
-#negative control
-- ../data/genome-s10+s11.fa.gz
-#positive control
-- ../data/sample/SLE_2018_wet.fq.gz
+
+- data/marine/SLE_2018_wet.fq.gz
 
 
 # sourmash-specific config params
