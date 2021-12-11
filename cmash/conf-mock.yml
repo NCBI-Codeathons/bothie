@@ -1,0 +1,4 @@
+metagenome_files:
+- ../data/marine/mock_8M_HAB_metagenome.fq.gz
+
+# cmash config params

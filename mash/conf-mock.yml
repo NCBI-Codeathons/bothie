@@ -1,0 +1,9 @@
+# one or more files that will be combined into a single sample database
+metagenome_files:
+- ../data/marine/mock_8M_HAB_metagenome.fq.gz
+
+# default output directory
+output_dir: outputs/
+
+# sourmash-specific config params
+ksize: 31
