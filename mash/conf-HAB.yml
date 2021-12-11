@@ -1,8 +1,12 @@
 # one or more files that will be combined into a single sample database
 metagenome_files:
+#negative control
 - ../data/marine/SLE_2018_wet.fq.gz
 - ../data/marine/mock_8M_HAB_metagenome.fq.gz
 
+
+# default output directory
+output_dir: outputs/
+
 # sourmash-specific config params
-ksize: 10
-scaled: 200
+ksize: 31
