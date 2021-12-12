@@ -6,9 +6,9 @@
 set -x
 set -e
 
-for tool in sourmash mash cmash metagraph sourmash-protein
+for tool in sourmash mash metagraph sourmash-protein
 do
-    ./run-many-csv ${tool}/conf-mock.yml $tool data/mock_datasets.csv -o BGC-${tool}.csv
+    ./run-many-csv ${tool}/conf-mock.yml $tool data/mock_datasets.csv -o BGC-mock-${tool}.csv
 done
 
 echo success!
