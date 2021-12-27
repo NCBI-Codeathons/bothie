@@ -1,4 +1,5 @@
-#!bin/bash
+#!/bin/bash
+
 echo sample,query >> BGC-IRL.csv
 for metagenome in `ls *fq.gz`; do
   echo data/marine/IRL_metagenomes/${metagenome},data/marine/BGC/Cylindrospermopsis_raciborskii_T3_BCG_saxitoxin_GenBank_DQ787200v1.fna >> BGC-IRL.csv
