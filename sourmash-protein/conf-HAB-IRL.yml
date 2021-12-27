@@ -1,5 +1,6 @@
 # one or more files that will be combined into a single sample database
 metagenome_files:
+- ../data/marine/IRL_metagenomes/mock_8M_HAB_metagenome.fq.gz
 - ../data/marine/IRL_metagenomes/pp_CCHH-01_20180823.fq.gz
 - ../data/marine/IRL_metagenomes/pp_CCHH-01_20190318.fq.gz
 - ../data/marine/IRL_metagenomes/pp_CCHH-01_20191015.fq.gz
