@@ -6,9 +6,9 @@
 set -x
 set -e
 
-for tool in sourmash mash sourmash-protein
+for tool in mash sourmash-protein
 do
-    ./run-many-csv ${tool}/conf-HAB-IRL.yml $tool data/BGC-IRL.csv -o HAB-IRL-${tool}.csv
+    ./run-many-csv ${tool}/conf-IRL.yml $tool data/HAB-IRL.csv -o HAB-IRL-${tool}.csv
 done
 
 echo success!
