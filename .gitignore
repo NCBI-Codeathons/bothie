@@ -1,7 +1,7 @@
 .snakemake
 *~
 outputs.*
-download-genomes/downloads/*
+download-genomes/*
 data/test/*
 data/marine/*
 data/nmdc/*

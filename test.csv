@@ -1,0 +1,2 @@
+sample,query,result,results_dir
+data/marine/SLE_2018_wet.fq.gz,data/marine/BGC/Microcystis_aeruginosa_PCC_7806_microcystin_BGC_GenBank_AF183408v1.fna,1,outputs.sourmash.a_hr4xdw/results.1.1
