@@ -8,7 +8,7 @@ set -e
 
 for tool in mash sourmash sourmash-protein
 do
-    ./run-many-csv ${tool}/conf-controls.yml $tool data/controls-HAB.csv -o controls-HAB-${tool}.csv
+    ./run-many-csv ${tool}/conf-IRL.yml $tool data/BGC-IRL-2.csv -o BGC-IRL-${tool}.csv
 done
 
 echo success!
