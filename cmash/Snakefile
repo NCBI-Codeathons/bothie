@@ -3,6 +3,20 @@ import sys, os
 # load stuff from config file
 SAMPLES=config.get('metagenome_files', [])
 QUERY=config.get('query_file', '')
+ksize = config.get('ksize', 'unset')
+use_stream=config.get('use_stream', False)
+use_sensitive=config.get('use_sensitive', False)
+k_range=config.get('k_range', '')
+
+if use_stream and (not k_range):
+        print("Must input range of k-mer sizes in format <start>-<end>-<increment> to use streaming mode!");
+        sys.exit(-1)
+if (not use_stream):
+    try:
+        ksize = int(ksize)
+    except ValueError:
+        print(f"Invalid ksize {repr(ksize)}", file=sys.stderr)
+        raise
 
 # this sets OUTPUT_DIR, RESULTS_DIR, SAMPLE_PREP, and QUERY_PREP.
 include: '../common.snakefile'
@@ -22,7 +36,11 @@ rule prepare_sample:
         for sample in {SAMPLES}; do
             echo {sample} >> {output}/reference_paths.txt
         done
-        MakeDNADatabase.py {output}/reference_paths.txt {output}/sample.h5
+        if [[ "{use_stream}" == "True" ]]; then
+            MakeStreamingDNADatabase.py {output}/reference_paths.txt {output}/sample.h5
+        else
+            MakeDNADatabase.py {output}/reference_paths.txt {output}/sample.h5
+        fi
     """
 
 rule prepare_query:
@@ -31,23 +49,32 @@ rule prepare_query:
     log: f"{LOG_DIR}/prepare_query.log"
     benchmark: f"{LOG_DIR}/prepare_query.benchmark"
     shell: """
-       rm -rf {output}
-       mkdir -p {output}
-       cp {QUERY} {output}/query
+        rm -rf {output}
+        mkdir -p {output}
+        if [[ "{use_stream}" == "False" ]]; then
+            MakeNodeGraph.py {QUERY} {output}
+        fi
+        cp {QUERY} {output}/query
     """
 
 rule execute_query:
     input:
         query = f"{QUERY_PREP}/query",
         sample = f"{SAMPLE_PREP}/sample.h5",
+    params:
+        nodegraph=f"{QUERY_PREP}/{os.path.basename(QUERY)}.NodeGraph.K{ksize}"
     output: directory(RESULTS_DIR)
     log: f"{LOG_DIR}/execute_query.log"
     benchmark: f"{LOG_DIR}/execute_query.benchmark"
     conda: "../conf/env/cmash.yml"
     shell: """
-       rm -rf {output}
-       mkdir -p {output}
-       QueryDNADatabase.py {input.query} {input.sample} {output}/results.csv
+        rm -rf {output}
+        mkdir -p {output}
+        if [[ "{use_stream}" == "False" ]]; then
+            QueryDNADatabase.py {input.query} {input.sample} {output}/results.csv --node_graph {params.nodegraph}
+        else
+            StreamingQueryDNADatabase.py {input.query} {input.sample} {output}/results.csv {k_range}
+        fi
     """
 
 rule do_query:
@@ -72,5 +99,7 @@ rule install_software:
     log: f"{LOG_DIR}/install_software.log"
     benchmark: f"{LOG_DIR}/install_software.benchmark"
     shell: """
-	MakeNodeGraph.py -h
+    MakeDNADatabase.py -h > /dev/null
+    QueryDNADatabase.py -h > /dev/null
+	MakeNodeGraph.py -h > /dev/null
     """
