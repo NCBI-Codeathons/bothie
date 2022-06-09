@@ -101,7 +101,7 @@ You can run all the tools on a small test data set with:
 + Minghang Lee: matchy@snu.ac.kr
 + René KM Xavier: rmillerxavie2017@fau.edu
 + Rodrigo Polo: ropolo@gmail.com
-+ Adelaide Rhodes: adelaide.rhodes@nih.gov
++ Adelaide Rhodes: adelaide.rhodes@tufts.edu
 + Jack Roddy: jack.w.roddy@gmail.com
 + Alex Sweeten: alex.sweeten@gmail.com
 + Adrian Viehweger: adrian.viehweger@googlemail.com
